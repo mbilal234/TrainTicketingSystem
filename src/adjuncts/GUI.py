@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Feb  4 14:18:25 2022
+
+@author: M. Ashhub Ali
+"""
+
 import sys
 from PyQt5 import QtGui, QtWidgets, uic
 from PyQt5.QtCore import *
@@ -10,6 +17,96 @@ import json
 
 directory = os.getcwd()
 
+def trains_maker():
+    true = True
+    depts = ["karachi", "lahore", "rawalpindi", "quetta", "peshawar"]
+    arrival = ["karachi", "lahore", "rawalpindi", "quetta", "peshawar"]
+    days = ["MON", "MON", "TUE", "TUE", "WED", "WED", "THU", "THU", "FRI", "FRI", "SAT", "SAT", "SUN", "SUN", ]
+    types = ["economy", "business"]
+    id = 1001
+    times = ["0800", "1600", "0900", "1700", "1000", "1800", "1100", "1900", "1200", "2000", "1300", "2100", "1400",
+             "2200", "1500", "2300", "0830", "1630", "0930", "1730", "1030", "1830", "1130", "1930", "1230", "2030",
+             "1330", "2130", "1430", "2230", "1530", "2330"] * 100
+    keys = []
+    values = []
+    t_num = 0
+
+    try:
+        f = open("Trains.txt", "x")
+    except:
+        pass
+    else:
+        for i in depts:
+            for j in arrival:
+                if i == j:
+                    pass
+                else:
+                    for k in days:
+                        for l in types:
+                            if l == "economy":
+                                dc = '{"Train' + str(id - 1000) + '": "' + str(
+                                    id) + '", "Type": "' + l + '", "day": ' + '"' + k + '"' + ', "time": ' + '"' + \
+                                     times[
+                                         t_num] + '"' + ', "' + i + '"' + ': ' + '"' + j + '", "1": true, "2": true, "3": true, "4": true, "5": true, "6": true, "7": true, "8": true, "9": true, "10": true, "11": true, "12": true, "13": true, "14": true, "15": true, "16": true, "17": true, "18": true, "19": true, "20": true, "21": true, "22": true, "23": true, "24": true,"25": true, "26": true, "27": true, "28": true, "29": true, "30": true}'
+
+                                with open("Trains.txt", "a") as op:
+                                    op.write(dc + "\n")
+                            elif l == "business":
+                                dc = '{"Train' + str(id - 1000) + '": "' + str(
+                                    id) + '", "Type": "' + l + '", "day": ' + '"' + k + '"' + ', "time": ' + '"' + \
+                                     times[
+                                         t_num] + '"' + ', "' + i + '"' + ': ' + '"' + j + '", "A1": true, "A2": true, "A3": true, "A4": true, "A5": true, "A6": true, "B1": true, "B2": true, "B3": true, "B4": true, "B5": true, "B6": true, "C1": true, "C2": true, "C3": true, "C4": true, "C5": true, "C6": true, "D1": true, "D2": true, "D3": true, "D4": true, "D5": true, "D6": true, "E1": true, "E2": true, "E3": true, "E4": true, "E5": true, "E6": true}'
+
+                                id += 1
+                                with open("Trains.txt", "a") as op:
+                                    op.write(dc + "\n")
+                                    t_num += 1
+def schedule_maker():
+    global schedule
+    schedule = []
+    depts = ["Karachi", "Lahore", "Rawalpindi", "Quetta", "Peshawar"]
+    arrival = ["Karachi", "Lahore", "Rawalpindi", "Quetta", "Peshawar"]
+    days = ["MON", "TUE", "WED","THU", "FRI", "SAT", "SUN"]
+    times = ["0800", "1600", "0900", "1700", "1000", "1800", "1100", "1900", "1200", "2000", "1300", "2100", "1400", "2200", "1500", "2300", "0830", "1630", "0930", "1730", "1030", "1830", "1130", "1930", "1230", "2030", "1330", "2130", "1430", "2230", "1530", "2330"]*100
+    t_num = 0
+
+
+    try:
+        f = open("schedule.txt", "x")
+    except:
+        pass
+    else:
+        with open("schedule.txt", "a") as op:
+            for i in depts:
+                for j in arrival:
+                    if i == j:
+                        pass
+                    else:
+                        op.write(i + " - TO - " + j +"\n")
+                        for k in days:
+                            op.write(k + "\t\t" + str(times[t_num]) + "\t\t" + "\t")
+                            t_num += 1
+                            op.write(str(times[t_num]) + "\n")
+                            t_num += 1
+    with open("schedule.txt") as op:
+        for i in op:
+            item = ""
+            for j in i:
+                if j != "\n":
+                    item += j
+                else:
+                    schedule.append(item)
+                    break
+
+def customer_information():
+    import pandas as pd
+    directory = os.getcwd()
+    with open("TrainReservation.txt", "a") as op:
+        op.write(
+            "BookingID, Name, DOB, Departure, Destination, Date, Day, Time, Type, Seats, Berth, FareCost, Elderly, Kids, SeatNumber" + "\n")
+    read_file = pd.read_csv(directory + r'\TrainReservation.txt')
+    read_file.to_csv(directory + r'\TrainReservation.csv', index=None)
+    
 class MainWindow(QtWidgets.QMainWindow):
     """
     The MainWindow class represents the main window of the Train Reservation System application.
@@ -437,3 +534,16 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ViewReservation(name, cnic, outCancel, self.CancelTicketFrame)
             self.message.setText("Your Booking has been successfully cancelled! A refund of 50% has been transferred to your account.")
             self.RemoveBooking(row)
+        
+schedule_maker()
+trains_maker()
+try:
+    f = open("TrainReservation.txt", "x")
+except:
+    pass
+else:
+    customer_information()
+app = QtWidgets.QApplication(sys.argv)
+window = MainWindow()
+window.show()
+app.exec_()
