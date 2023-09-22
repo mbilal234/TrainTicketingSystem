@@ -2,6 +2,28 @@ import os
 import pandas as pd
 
 def CustomerInformation():
+    """
+    This function manages customer information for a train reservation system.
+
+    It performs the following tasks:
+    1. Retrieves the current working directory.
+    2. Defines the data directory path (assuming it's at the same level as 'src').
+    3. Ensures that the 'data' directory exists and creates it if it doesn't.
+    4. Defines file paths for 'TrainReservation.txt' and 'TrainReservation.csv'.
+    5. Writes a header to the 'TrainReservation.txt' file if it doesn't already exist.
+    6. Reads the 'TrainReservation.txt' file and saves its content as 'TrainReservation.csv'.
+
+    The function is designed to initialize and manage data files for train reservation information.
+
+    Parameters:
+    None
+
+    Returns:
+    None
+
+    Example Usage:
+    CustomerInformation()  # Calls the function to manage customer information.
+    """
     # Get the current working directory
     current_directory = os.getcwd()
     
@@ -23,4 +45,3 @@ def CustomerInformation():
     # Read the TrainReservation.txt file and save it as TrainReservation.csv
     read_file = pd.read_csv(train_reservation_txt_path)
     read_file.to_csv(train_reservation_csv_path, index=None)
-

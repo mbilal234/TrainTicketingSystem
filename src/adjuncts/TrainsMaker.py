@@ -1,7 +1,30 @@
 import json
-from peripheries import Train
+from adjuncts import Train  # Assuming 'Train' class is imported from an external module.
 import os
+
 class TrainsMaker:
+    """
+    The TrainsMaker class generates and manages train objects, allowing the creation of train schedules.
+
+    Attributes:
+    - depts (list): A list of departure locations.
+    - arrival (list): A list of arrival locations.
+    - days (list): A list of days of the week.
+    - types (list): A list of train types or categories.
+    - id (int): An identifier for train objects.
+    - times (list): A list of departure times.
+    - t_num (int): An internal variable to keep track of time index during train generation.
+
+    Methods:
+    - generate_train_objects(): Generates a list of train objects based on provided attributes.
+    - get_seats(train_type): Returns a dictionary representing available seats based on the train type.
+    - save_trains_to_file(train_objects): Saves train objects to a 'Trains.txt' file in JSON format.
+
+    Example Usage:
+    trains_maker = TrainsMaker()  # Create an instance of the TrainsMaker class.
+    train_objects = trains_maker.generate_train_objects()  # Generate train objects.
+    trains_maker.save_trains_to_file(train_objects)  # Save train objects to a file.
+    """
     def __init__(self):
         self.depts = ["karachi", "lahore", "rawalpindi", "quetta", "peshawar"]
         self.arrival = ["karachi", "lahore", "rawalpindi", "quetta", "peshawar"]
@@ -16,6 +39,12 @@ class TrainsMaker:
         self.t_num = 0
 
     def generate_train_objects(self):
+        """
+        Generates a list of train objects based on predefined attributes.
+
+        Returns:
+        list: A list of Train objects representing generated trains.
+        """
         train_objects = []
 
         for departure in self.depts:
@@ -34,6 +63,15 @@ class TrainsMaker:
         return train_objects
 
     def get_seats(self, train_type):
+        """
+        Returns a dictionary representing available seats based on the train type.
+
+        Parameters:
+        - train_type (str): The type or category of the train ("economy" or "business").
+
+        Returns:
+        dict: A dictionary representing available seats.
+        """
         if train_type == "economy":
             return {
                 str(i): True for i in range(1, 31)
@@ -44,8 +82,17 @@ class TrainsMaker:
             }
 
     def save_trains_to_file(self, train_objects):
+        """
+        Saves train objects to a 'Trains.txt' file in JSON format.
+
+        Parameters:
+        - train_objects (list): A list of Train objects to be saved.
+
+        Returns:
+        None
+        """
         # Define the data directory path (assuming it's at the same level as 'src')
-        data_directory = os.path.join(os.getcwd(), '..', 'data')
+        data_directory = os.path.join(os.getcwd(), 'data')
         
         # Ensure the 'data' directory exists, create it if it doesn't
         if not os.path.exists(data_directory):
@@ -59,11 +106,3 @@ class TrainsMaker:
                 train_data = train.to_json()
                 json.dump(train_data, file)
                 file.write("\n")
-
-
-
-
-
-
-
-

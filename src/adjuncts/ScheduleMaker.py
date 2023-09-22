@@ -1,6 +1,31 @@
 import os
 
 class ScheduleMaker:
+    """
+    The ScheduleMaker class is designed to generate, read, and save schedules for train departures and arrivals.
+
+    It includes methods for generating a schedule, reading an existing schedule from a file, and saving the
+    schedule to a file.
+
+    Attributes:
+    - schedule (list): A list to store the schedule information as strings.
+    - depts (list): A list of departure locations.
+    - arrival (list): A list of arrival locations.
+    - days (list): A list of days of the week.
+    - times (list): A list of departure and arrival times.
+    - t_num (int): An internal variable to keep track of the time index during schedule generation.
+
+    Methods:
+    - generate_schedule(): Generates a schedule and writes it to a 'schedule.txt' file.
+    - read_schedule(): Reads a schedule from the 'schedule.txt' file and stores it in the 'schedule' attribute.
+    - save_schedule(): Saves the schedule stored in the 'schedule' attribute to the 'schedule.txt' file.
+
+    Example Usage:
+    schedule_maker = ScheduleMaker()  # Create an instance of the ScheduleMaker class.
+    schedule_maker.generate_schedule()  # Generate and save a schedule.
+    schedule_maker.read_schedule()  # Read the saved schedule from the file.
+    schedule_maker.save_schedule()  # Save any modifications to the schedule back to the file.
+    """
     def __init__(self):
         self.schedule = []
         self.depts = ["Karachi", "Lahore", "Rawalpindi", "Quetta", "Peshawar"]
@@ -14,6 +39,18 @@ class ScheduleMaker:
         self.t_num = 0
 
     def generate_schedule(self):
+        """
+        Generates a train schedule and writes it to a 'schedule.txt' file.
+
+        The generated schedule includes information about departures and arrivals between different locations,
+        including days of the week and corresponding departure and arrival times.
+
+        Parameters:
+        None
+
+        Returns:
+        None
+        """
         # Define the data directory path (assuming it's at the same level as 'src')
         data_directory = os.path.join(os.getcwd(), 'data')
         
@@ -41,6 +78,15 @@ class ScheduleMaker:
             pass
 
     def read_schedule(self):
+        """
+        Reads a train schedule from the 'schedule.txt' file and stores it in the 'schedule' attribute.
+
+        Parameters:
+        None
+
+        Returns:
+        None
+        """
         # Define the file path for schedule.txt
         schedule_txt_path = os.path.join(os.getcwd(), 'data', 'schedule.txt')
         
@@ -49,6 +95,15 @@ class ScheduleMaker:
                 self.schedule.append(line.strip())
 
     def save_schedule(self):
+        """
+        Saves the schedule stored in the 'schedule' attribute to the 'schedule.txt' file.
+
+        Parameters:
+        None
+
+        Returns:
+        None
+        """
         # Define the file path for schedule.txt
         schedule_txt_path = os.path.join(os.getcwd(), 'data', 'schedule.txt')
         
