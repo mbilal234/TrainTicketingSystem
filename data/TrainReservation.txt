@@ -1,1 +1,0 @@
-BookingID, Name, DOB, Departure, Destination, Date, Day, Time, Type, Seats, Berth, FareCost, Elderly, Kids, SeatNumber
