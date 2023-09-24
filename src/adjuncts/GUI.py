@@ -108,6 +108,35 @@ def customer_information():
     read_file.to_csv(directory + r'\TrainReservation.csv', index=None)
     
 class MainWindow(QtWidgets.QMainWindow):
+    """
+    The MainWindow class represents the main window of the Train Reservation System application.
+
+    Attributes:
+    - directory (str): The current working directory.
+
+    Methods:
+    - CorrectName(name, button): Validates and corrects the name input field.
+    - CorrectCNIC(cnic, button): Validates and corrects the CNIC input field.
+    - ReturnToMenu(frame, name, cnic): Hides a given frame and resets input fields, enabling navigation to the main menu.
+    - _updateDestination(depart, dest): Updates the destination based on the selected departure city.
+    - _update2to18(val1, box1, button): Updates available seats for passengers between 2 and 18 years old.
+    - _updateAbove60(val2, box2): Updates available seats for passengers above 60 years old.
+    - SeatSelection(t_type, day, time, dept, dest): Selects available seats based on train type, day, time, departure, and destination.
+    - MaxSeats(train, typ, berth=""): Calculates the maximum available seats based on the train type and berth.
+    - updateTime(day, dept, dest, hr, combobox): Updates the available time slots based on the selected day, departure, and destination.
+    - fareCost(details): Calculates fare cost and discounts based on passenger details and train type.
+    - FinalSelection(details, box, rateframes): Finalizes the ticket booking with fare details and seat allocation.
+    - BookTicket(inputbox, moredetails, frame, signal): Handles the booking process, input validation, and seat selection.
+    - SetDefault(L): Resets input fields and enables passenger details input for a new booking.
+    - UpdateReservation(): Handles updating an existing reservation.
+    - ReadFile(name, cnic): Reads passenger information from the CSV file.
+    - ViewReservation(name, cnic, outputs, frame): Views passenger reservation details.
+    - RemoveBooking(details): Removes a passenger's booking, releasing the booked seats.
+    - CancelBooking(): Handles the cancellation of a booking and refunds.
+
+    Example Usage:
+    - Create an instance of the MainWindow class to run the Train Reservation System application.
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         uic.loadUi(directory+r"\\train.ui", self)
@@ -223,10 +252,11 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             global train101
             global train100
-            with open("Trains.txt","r") as file:
+            with open("../data/Trains.txt","r") as file:
                 train100=file.readlines()
                 for i in train100:
-                    if '"Type": "'+t_type.lower()+'", "day": "'+day+'", "time": '+'"'+time+'", '+ '"'+dept.lower()+'": "'+dest.lower()+'"' in i:
+                    print(t_type)
+                    if '"Type": "'+t_type.lower()+'", "Day": "'+day+'", "Time": '+'"'+time+'", '+ '"'+dept.lower()+'": "'+dest.lower()+'"' in i:
                         d=train100.index(i)
                         break
                 train101=json.loads(train100[d])
@@ -250,7 +280,7 @@ class MainWindow(QtWidgets.QMainWindow):
         combobox.clear()
         schedule = []
         diff = timedelta.max
-        with open("schedule.txt") as op:
+        with open("../data/schedule.txt") as op:
             for i in op:
                 item = ""
                 for j in i:
