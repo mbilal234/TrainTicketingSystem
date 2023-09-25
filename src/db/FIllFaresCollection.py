@@ -1,4 +1,4 @@
-from DatabaseConnection import db
+from DatabaseConnection import db   
 
 class FillFaresCollection:
 
