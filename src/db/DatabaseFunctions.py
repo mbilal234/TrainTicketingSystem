@@ -1,5 +1,5 @@
 from DatabaseConnection import db
-from datetime import datetime, timedelta
+from datetime import datetime
 
 class DatabaseFunction:
 
@@ -175,13 +175,50 @@ class DatabaseFunction:
         for i in seats:
             self.seats.update_one({"seatNumber": i}, {"$set":{"bookingId": bookingId}})
 
+
+    def view_booking(self, bookingId, cnic):
+        """
+        The function is aimed for displaying the booking to the user
+        The function takes the bookingId and cnic and matches the documents in the database
+        """
+
+        booking = self.bookings.find_one({"bookingId": bookingId, "cnic": cnic})
+        if len(booking):
+            seats = self.seats.find({"bookingId": bookingId})  
+
+        return booking, seats
+
+    def cancel_booking(self, bookingId, cnic):
+        """
+        This function works to cancel booking
+        The function takes the bookingId and cnic and matches the documents in the database
+        """    
+
+        booking = self.bookings.find_one({"bookingId": bookingId, "cnic": cnic})
+        if booking is None:
+            return "No booking found with this cnic and bookingId"
+
+        self.bookings.delete_one({"bookingId": bookingId, "cnic": cnic})
+        self.seats.update_many({"bookingId": bookingId}, {"$set":{"bookingId": None}})
+
+        return "The Booking has been cancelled"
         
 
 if __name__=="__main__":
     df = DatabaseFunction()
-    df.get_fare("Karachi", "Lahore")
-    df.get_seats_and_time("Karachi", "Lahore", "2023-10-14", "08:30:00", "economy")
-    df.book_ticket("/////////", "/////////", 1000, "//////////", 0, 0, 0, [1, 2, 3])
-    print("The Booking has been done")
-    document_inserted = db["bookings"].find_one({"cnic": "//////////"})
-    print(document_inserted)
+    # df.get_fare("Karachi", "Lahore")
+    # df.get_seats_and_time("Karachi", "Lahore", "2023-10-14", "08:30:00", "economy")
+    # df.book_ticket("//////////", "//////////", 1000, "/////////", 0, 0, 0, [1, 2, 3])
+    # print("The Booking has been done")
+    # document_inserted = db["bookings"].find_one({"cnic": "//////////"})
+    # print(document_inserted)
+
+    # booking = df.view_booking(3896, "3830342091289")
+    # print(booking)
+    # for i in booking[1]:
+    #     print(i)
+
+    # result = df.cancel_booking(3896, "3830342091289")
+    # print(result)
+
+
