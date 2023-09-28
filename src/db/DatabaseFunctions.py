@@ -29,6 +29,7 @@ class DatabaseFunction:
 
         fare_query = {"$or": [{"firstCity": departure, "secondCity": destination }, {"firstCity": destination, "secondCity": departure}]}
         self.fare = int(self.fares.find(fare_query)[0]["price"])
+        return self.fare
 
     def get_seats_and_time(self, departure, destination, date, time, travelling_class):
 
@@ -244,7 +245,7 @@ class DatabaseFunction:
 
 if __name__=="__main__":
     df = DatabaseFunction()
-    df.get_fare("Karachi", "Lahore")
+    print(df.get_fare("Karachi", "Rawalpindi"))
     # df.get_seats_and_time("Karachi", "Lahore", "2023-10-14", "08:30:00", "economy")
     # df.book_ticket("////////", "////////", 1000, "2002-09-17", 0, 0, 0, [1, 2, 3])
     # print("The Booking has been done")
