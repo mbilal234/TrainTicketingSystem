@@ -44,7 +44,7 @@ class FillFaresCollection:
 
 if __name__=="__main__":
     ffc = FillFaresCollection()
-    ffc.generate_docuemnts()
+    ffc.generate_documents()
     ffc.save_documents()
 
 
