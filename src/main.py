@@ -3,6 +3,9 @@ from adjuncts import CustomerInformation, GUI, ScheduleMaker, Train, TrainsMaker
 from PyQt5 import QtGui, QtWidgets, uic
 from PyQt5.QtCore import *
 import sys
+import pymongo
+from dotenv import load_dotenv
+import os
 
 def main():
     """
@@ -24,7 +27,11 @@ def main():
     Returns:
         None
     """
-    
+        
+    load_dotenv()
+
+    my_client = pymongo.MongoClient(os.getenv("MONGO_URI"))
+    db = my_client["train_reservation_system"]
     # Create an instance of ScheduleMaker
     schedule_maker = ScheduleMaker.ScheduleMaker()
 
