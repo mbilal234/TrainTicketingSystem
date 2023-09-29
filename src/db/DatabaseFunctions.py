@@ -171,11 +171,21 @@ class DatabaseFunction:
             "cost": cost
             }
         
+        for i in seats:
+            seat_document = self.seats.find_one({"seatNumber": i})
+            if seat_document["bookingId"]:
+                return None
+        
         self.bookings.insert_one(booking_document)
 
         for i in seats:
             self.seats.update_one({"seatNumber": i}, {"$set":{"bookingId": bookingId}})
 
+        booking = self.bookings.find_one({"_id": bookingId, "cnic": cnic})
+        if booking:
+            seats = self.seats.find({"bookingId": bookingId})  
+
+        return booking, list(seats)
 
     def view_booking(self, bookingId, cnic):
         """
@@ -184,7 +194,8 @@ class DatabaseFunction:
         """
 
         booking = self.bookings.find_one({"bookingId": bookingId, "cnic": cnic})
-        if len(booking):
+        seats = []
+        if booking:
             seats = self.seats.find({"bookingId": bookingId})  
 
         return booking, seats
@@ -203,51 +214,13 @@ class DatabaseFunction:
         self.seats.update_many({"bookingId": bookingId}, {"$set":{"bookingId": None}})
 
         return "The Booking has been cancelled"
-    
-    def update_booking(self, bookingId, cnic, name, travelId, dateOfBirth, numUnderTwo, numYoung, numAged, seats):
-        """
-        The function updates the bookings
-        It retains the old values and saves the new ones
-        """
-
-        num_of_seats = len(seats)
-
-        other_seats = num_of_seats - numUnderTwo - numYoung - numAged
-
-        cost = int(other_seats * self.fare + numUnderTwo * self.fare * 0.7 + numYoung * self.fare * 0.8 + numAged * self.fare * 0.75)
-
-        booking_document = {
-            "bookingId": bookingId, 
-            "timestamp": str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
-            "cnic": cnic,
-            "name": name,
-            "dateOfBirth": dateOfBirth,
-            "travelId": travelId,
-            "numberOfSeats" : num_of_seats,
-            "numUnderTwo": numUnderTwo,
-            "numYoung": numYoung,
-            "numAged": numAged,
-            "cost": cost
-            }
-        
-        self.bookings.update_one({"bookingId": bookingId, "cnic": cnic}, { "$set": booking_document})
-        
-        for i in seats:
-            self.seats.update_one({"seatNumber": i}, {"$set":{"bookingId": bookingId}})
-
-        all_seats = self.seats.find({"bookingId": bookingId})
-
-        for i in all_seats:
-            if i["seatNumber"] not in seats:
-                self.seats.update_one({"seatNumber": i}, {"$set":{"bookingId": None}})
-
         
 
 if __name__=="__main__":
     df = DatabaseFunction()
-    print(df.get_fare("Karachi", "Rawalpindi"))
-    # df.get_seats_and_time("Karachi", "Lahore", "2023-10-14", "08:30:00", "economy")
-    # df.book_ticket("////////", "////////", 1000, "2002-09-17", 0, 0, 0, [1, 2, 3])
+    df.get_fare("Karachi", "Rawalpindi")
+    df.get_seats_and_time("Karachi", "Lahore", "2023-10-14", "08:30:00", "economy")
+    # print(df.book_ticket("////////////", "////////", 1000, "2002-09-17", 0, 0, 0, [1, 2, 3]))
     # print("The Booking has been done")
     # document_inserted = db["bookings"].find_one({"cnic": "///////////"})
     # print(document_inserted)
@@ -257,9 +230,9 @@ if __name__=="__main__":
     # for i in booking[1]:
     #     print(i)
 
-    # df.update_booking(3896, "////////////////", "Abdul Arham", 1000, "2002-09-17", 0, 0, 1, [1, 2, 3])
+    # df.update_booking(3896, "////////////////", "////////////", 1000, "2002-09-17", 0, 0, 1, [1, 2, 3])
 
-    # result = df.cancel_booking(3896, "////////////////")
+    # result = df.cancel_booking(3896, "/////////////")
     # print(result)
 
 
