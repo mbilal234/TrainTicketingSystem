@@ -56,8 +56,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.BookButton.clicked.connect(lambda: self.tabWidget.setCurrentIndex(1))
         self.ViewButton.clicked.connect(lambda: self.tabWidget.setCurrentIndex(2))
-        self.UpdateButton.clicked.connect(lambda: self.tabWidget.setCurrentIndex(3))
-        self.CancelButton.clicked.connect(lambda: self.tabWidget.setCurrentIndex(4))
+        self.CancelButton.clicked.connect(lambda: self.tabWidget.setCurrentIndex(3))
         
         self.NameInput.textChanged.connect(lambda: self.CorrectName(self.NameInput, self.submitButton))
         self.cnicInput.textChanged.connect(lambda: self.CorrectCNIC(self.cnicInput, self.submitButton))
@@ -77,22 +76,7 @@ class MainWindow(QtWidgets.QMainWindow):
         L = [self.FareFrame, self.BookingDetailsFrame1, self.AvailableCombo, self.NameInput, self.cnicInput, self.SuggestedTime, self.Above60Box, self.SeatsBox, 
              self.Age2t18Box, self.BookDetails, self.dobInput, self.departureInput, self.destinationInput, self.DateInput, self.TypeInput, self.timeInput]
         self.ViewReservationButton.clicked.connect(lambda: self.SetDefault(L))
-        
-        self.UpdateBookingFrame.hide()
-        self.NameInputUpdate.textChanged.connect(lambda: self.CorrectName(self.NameInputUpdate, self.UpdateSubmit))
-        self.cnicInputUpdate.textChanged.connect(lambda: self.CorrectCNIC(self.cnicInputUpdate, self.UpdateSubmit))
-        self.UpdateSubmit.clicked.connect(self.UpdateReservation)
-        self.MenuButtonUpdateTab.clicked.connect(lambda: self.ReturnToMenu(self.UpdateBookingFrame, self.NameInputUpdate, self.cnicInputUpdate))
-        self.departureInputUpdate.currentTextChanged.connect(lambda: self._updateDestination(self.departureInputUpdate, self.destinationInputUpdate))
-        self.SeatsBoxUpdate.valueChanged.connect(lambda: self._update2to18(self.SeatsBoxUpdate.value(), self.Age2t18BoxUpdate, self.UpdateDetails))
-        self.Age2t18BoxUpdate.valueChanged.connect(lambda: self._updateAbove60(self.Age2t18BoxUpdate.value(), self.Above60BoxUpdate))
-        self.dobInputUpdate.hide()
-        S = [self.FareFrameU, self.UpdateBookingFrame, self.AvailableComboUpdate, self.NameInputUpdate, self.cnicInputUpdate, self.SuggestedTime, self.Above60BoxUpdate, self.SeatsBoxUpdate, 
-             self.Age2t18BoxUpdate, self.UpdateDetails, self.dobInputUpdate, self.departureInputUpdate, self.destinationInputUpdate, self.DateInputUpdate, self.TypeInputUpdate, self.timeInputUpdate]
-        self.ViewReservationButtonUpdate.clicked.connect(lambda: self.tabWidget.setCurrentIndex(2))
-        self.ViewReservationButtonUpdate.clicked.connect(lambda: self.ViewReservation(self.NameInputUpdate.text(), self.cnicInputUpdate.text(), out, self.ViewTicketFrame))
-        self.ViewReservationButtonUpdate.clicked.connect(lambda: self.SetDefault(S))
-        self.FareFrameU.hide()
+        self.MenuButtonBookingTab.clicked.connect(lambda: self.tabWidget.setCurrentIndex(0))
         
         self.ViewTicketFrame.hide()
         self.NameInputBox.textChanged.connect(lambda: self.CorrectName(self.NameInputBox, self.ViewSubmit))
@@ -129,7 +113,7 @@ class MainWindow(QtWidgets.QMainWindow):
         name.setStyleSheet("border: 1px solid black;")
         cnic.setStyleSheet("border: 1px solid black;")
         self.tabWidget.setCurrentIndex(0)
-        self.message.setText("")
+        # self.message.setText("")
         
     def _updateDestination(self, depart, dest):
         dest.clear()
