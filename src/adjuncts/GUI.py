@@ -52,6 +52,8 @@ class MainWindow(QtWidgets.QMainWindow):
         super().__init__(*args, **kwargs)
         uic.loadUi(directory+r"\\train.ui", self)
         self.setWindowTitle("Train Reservation System")
+        self.setWindowIcon(QtGui.QIcon("assets\\train.png"))
+
         self.BookButton.clicked.connect(lambda: self.tabWidget.setCurrentIndex(1))
         self.ViewButton.clicked.connect(lambda: self.tabWidget.setCurrentIndex(2))
         self.UpdateButton.clicked.connect(lambda: self.tabWidget.setCurrentIndex(3))
@@ -453,8 +455,4 @@ try:
 except:
     pass
 else:
-    CustomerInformation.customer_information()
-app = QtWidgets.QApplication(sys.argv)
-window = MainWindow()
-window.show()
-app.exec_()
+    customer_information()

@@ -75,7 +75,7 @@ def main():
     window.show()
 
     # Run the QApplication event loop
-    app.exec_()
+    sys.exit(app.exec())
 
 # Entry point of the program
 if __name__ == "__main__":
