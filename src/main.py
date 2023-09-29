@@ -33,6 +33,7 @@ def main():
     my_client = pymongo.MongoClient(os.getenv("MONGO_URI"))
     db = my_client["train_reservation_system"]
     # Create an instance of ScheduleMaker
+    print(db)
     schedule_maker = ScheduleMaker.ScheduleMaker()
 
     # Generate a schedule
