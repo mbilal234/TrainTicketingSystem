@@ -151,11 +151,12 @@ class MainWindow(QtWidgets.QMainWindow):
             global train100
             with open("../data/Trains.txt","r") as file:
                 train100=file.readlines()
+                d = 0
                 for i in train100:
-                    print(t_type)
                     if '"Type": "'+t_type.lower()+'", "Day": "'+day+'", "Time": '+'"'+time+'", '+ '"'+dept.lower()+'": "'+dest.lower()+'"' in i:
                         d=train100.index(i)
                         break
+                
                 train101=json.loads(train100[d])
             
             if t_type == "Business":
@@ -434,9 +435,9 @@ class MainWindow(QtWidgets.QMainWindow):
         
 # schedule_maker()
 # trains_maker()
-# try:
-#     f = open("TrainReservation.txt", "x")
-# except:
-#     pass
-# else:
-#     customer_information()
+try:
+    f = open("TrainReservation.txt", "x")
+except:
+    pass
+else:
+    CustomerInformation.CustomerInformation()
