@@ -314,7 +314,7 @@ if __name__=="__main__":
 
 
     # To make sure that you have got the correct suggested times, run this code
-    # print(info[0]) # The times suggested, the keys show the time while the values are the travelIds
+    # print(info["times"]) # The times suggested, the keys show the time while the values are the travelIds
     # get_docs = df.schedule.find({"departure": "Karachi", "destination": "Lahore", "timestamp": { "$regex": "^2023-10-14", "$options": "i"}})
     # for i in get_docs:
     #     print(i)
