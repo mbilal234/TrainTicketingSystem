@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 import os
 import json
 from adjuncts import ScheduleMaker, TrainsMaker, CustomerInformation
+from db import DatabaseConnection, DatabaseFunctions
 
 directory = os.getcwd()
     
@@ -50,6 +51,7 @@ class MainWindow(QtWidgets.QMainWindow):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.db = DatabaseFunctions.DatabaseFunction()
         uic.loadUi(directory+r"\\train.ui", self)
         self.setWindowTitle("Train Reservation System")
         self.setWindowIcon(QtGui.QIcon("assets\\train.png"))
@@ -152,11 +154,12 @@ class MainWindow(QtWidgets.QMainWindow):
             with open("../data/Trains.txt","r") as file:
                 train100=file.readlines()
                 d = 0
+                print('"Type": "'+t_type.lower()+'", "Day": "'+day+'", "Time": '+'"'+time+'", '+ '"'+dept.lower()+'": "'+dest.lower()+'"')
                 for i in train100:
                     if '"Type": "'+t_type.lower()+'", "Day": "'+day+'", "Time": '+'"'+time+'", '+ '"'+dept.lower()+'": "'+dest.lower()+'"' in i:
                         d=train100.index(i)
                         break
-                
+                print("The value of d is:", d)
                 train101=json.loads(train100[d])
             
             if t_type == "Business":
@@ -270,7 +273,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 file.write(json.dumps(train101))
         except:
             pass
-        
+        print("Details are",details)
+        self.db.book_ticket(details["BookingID"], details["Name"], details["BookingID"], str(details["DOB"]), 0, details["Kids"], details["Elderly"], details["Seats"])
         with open('TrainReservation.csv', mode='a') as file:
             keys = ["BookingID", "Name", "DOB", "Departure", "Destination", "Date", "Day", 
                     "Time", "Type", "Seats", "Berth", "FareCost", "Elderly", "Kids", "SeatNumber"]

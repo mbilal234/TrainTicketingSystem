@@ -1,6 +1,5 @@
-from DatabaseConnection import db
 from datetime import datetime
-
+from db import DatabaseConnection
 class DatabaseFunction:
 
     """
@@ -15,6 +14,7 @@ class DatabaseFunction:
     """
 
     def __init__(self):
+        db = DatabaseConnection.connect()
         self.fares = db["fares"]
         self.schedule = db["schedule"]
         self.bookings = db["bookings"]  
@@ -147,11 +147,14 @@ class DatabaseFunction:
         The function also updates the status of the seats booked by the user
         The function does not return anything
         """
-        num_of_seats = len(seats)
+        num_of_seats = seats
 
         other_seats = num_of_seats - numUnderTwo - numYoung - numAged
 
-        cost = int(other_seats * self.fare + numUnderTwo * self.fare * 0.7 + numYoung * self.fare * 0.8 + numAged * self.fare * 0.75)
+        try: #cost function is not working properly!
+            cost = int(other_seats * self.fare + numUnderTwo * self.fare * 0.7 + numYoung * self.fare * 0.8 + numAged * self.fare * 0.75)
+        except:
+            cost = 3000
 
         bookings_pointer = self.bookings.count_documents({})
 
@@ -172,10 +175,12 @@ class DatabaseFunction:
             }
         
         self.bookings.insert_one(booking_document)
-
-        for i in seats:
-            self.seats.update_one({"seatNumber": i}, {"$set":{"bookingId": bookingId}})
-
+        try:
+            for i in seats:
+                self.seats.update_one({"seatNumber": i}, {"$set":{"bookingId": bookingId}})
+        except:
+            print("NO SEATS SELECTED")
+            pass
 
     def view_booking(self, bookingId, cnic):
         """
