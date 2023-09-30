@@ -374,13 +374,15 @@ class MainWindow(QtWidgets.QMainWindow):
         pass
         
     def ViewReservation(self, name, cnic, outputs, frame):
+        details = self.db.view_booking(3899,cnic) #name needs to be the booking ID!
+        print(details)
         row = self.ReadFile(name, cnic)
         if row == []:
             return None
         else:
             frame.show()
-            outputs[0].setText(row[0])
-            outputs[1].setText(row[1])
+            outputs[0].setText(details[0]['cnic'])
+            outputs[1].setText(details[0]['name'])
             outputs[2].setText(row[3])
             outputs[3].setText(row[4])
             outputs[4].setText(row[5])
@@ -391,6 +393,9 @@ class MainWindow(QtWidgets.QMainWindow):
     
     def RemoveBooking(self,  details):
         L = []
+        print(details)
+        #Change First argument to booking ID that needs to be cancelled!
+        self.db.cancel_booking(3899, details[0])
         with open("Trains.txt") as op:
             for i in op:
                 L.append(i)
@@ -434,7 +439,7 @@ class MainWindow(QtWidgets.QMainWindow):
             pass
         else:
             self.ViewReservation(name, cnic, outCancel, self.CancelTicketFrame)
-            self.message.setText("Your Booking has been successfully cancelled! A refund of 50% has been transferred to your account.")
+           # self.message.setText("Your Booking has been successfully cancelled! A refund of 50% has been transferred to your account.")
             self.RemoveBooking(row)
         
 # schedule_maker()
