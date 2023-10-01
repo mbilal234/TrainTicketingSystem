@@ -21,7 +21,7 @@ class DatabaseFunction:
         self.seats = db["seats"]
         self.fare = None
 
-    def get_fare(self, departure, destination):
+    def get_fare(self, departure, destination, travelling_class):
 
         """
         The function gets the fare from the database based on the departure and arrival cities selected
@@ -32,9 +32,12 @@ class DatabaseFunction:
         
         if not destination:
             return "No Destination City Specified"
+        
+        if not travelling_class:
+            return "No Travelling Class Specified"
 
-        fare_query = {"$or": [{"firstCity": departure, "secondCity": destination }, {"firstCity": destination, "secondCity": departure}]}
-        self.fare = int(self.fares.find(fare_query)[0]["price"])
+        fare_query = {"$or": [{"firstCity": departure, "secondCity": destination, "class": travelling_class }, {"firstCity": destination, "secondCity": departure, "class": travelling_class}]}
+        self.fare = self.fares.find_one(fare_query)["price"]
         return self.fare
 
     def get_seats_and_time(self, departure, destination, date, time, travelling_class):
@@ -111,7 +114,7 @@ class DatabaseFunction:
 
         all_seats = []
         for i in seats:
-            all_seats.append(i["seats"])
+            all_seats.append(i["seats"]["seatNumber"])
 
         return {"times": {str(suggested_time): travel_id_1, str(second_option_time): travel_id_2}, "seats": all_seats}
     
@@ -161,11 +164,11 @@ class DatabaseFunction:
 
         all_seats = []
         for i in seats:
-            all_seats.append(i["seats"])
+            all_seats.append(i["seats"]["seatNumber"])
 
         return {"seats": all_seats}
     
-    def book_ticket(self, cnic, name, travelId, dateOfBirth, numUnderTwo, numYoung, numAged, seats):
+    def book_ticket(self, cnic, name, travelId, dateOfBirth, numUnderTwo, numYoung, numAged, seats  ):
 
         """
         This function completes the booking procedure
@@ -213,7 +216,7 @@ class DatabaseFunction:
         for i in seats:
             seat_document = self.seats.find_one({"seatNumber": i})
             if seat_document["bookingId"]:
-                return "The Seat "+str(i)+" is already booked."
+                return "The Seat "+i+" is already booked."
         
         self.bookings.insert_one(booking_document)
 
@@ -309,7 +312,7 @@ class DatabaseFunction:
 
 if __name__=="__main__":
     df = DatabaseFunction()
-    df.get_fare("Karachi", "")
+    df.get_fare("Karachi", "Lahore", "economy")
     info = df.get_seats_and_time("Karachi", "Lahore", "2023-10-23", "08:30:00", "economy")
 
 
