@@ -265,7 +265,9 @@ class DatabaseFunction:
         if booking:
             all_seats = self.seats.find({"bookingId": bookingId})
             for i in all_seats:
-                seats.append(i["seatNumber"])  
+                seats.append(i["seatNumber"])
+        else:
+            return "No booking made with this Booking ID and CNIC."  
 
         train_reserved = self.schedule.find_one({"travelId": booking["travelId"]})
 

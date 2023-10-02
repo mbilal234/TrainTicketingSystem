@@ -64,5 +64,11 @@ class TestView(unittest.TestCase):
         }
         self.assertEqual(doc, expected_doc)
 
+    def test_view_when_no_booking(self):
+        doc = self.db.view_booking(4673, "1111111111111")
+        expected = "No booking made with this Booking ID and CNIC."  
+        self.assertEqual(doc, expected)
+
+
 if __name__=="__main__":
     unittest.main()
