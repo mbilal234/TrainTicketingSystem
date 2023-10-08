@@ -60,10 +60,13 @@ class MainWindow(QtWidgets.QMainWindow):
         
         self.NameInput.textChanged.connect(lambda: self.CorrectName(self.NameInput, self.submitButton))
         self.cnicInput.textChanged.connect(lambda: self.CorrectCNIC(self.cnicInput, self.submitButton))
+        self.DateInput.setMinimumDate(QDate.currentDate())
+        self.DateInput.setDate(QDate.currentDate())
+        self.DateInput.setMaximumDate(QDate.currentDate().addDays(30))
         self.departureInput.currentTextChanged.connect(lambda: self._updateDestination(self.departureInput, self.destinationInput))
         boxes = [self.NameInput, self.cnicInput, self.dobInput, self.departureInput, self.destinationInput, self.DateInput, self.TypeInput, self.timeInput, self.submitButton]
         details = [self.AvailableCombo, self.SuggestedTime, self.SeatsBox, self.Under2Box, self.Age2t18Box, self.Above60Box, self.BookDetails, self.BerthBox]
-        frame = [self.BookingDetailsFrame1, self.FareFrame, self.price, self.amount, self.discount, self.fare]
+        frame = [self.BookingDetailsFrame1, self.FareFrame, self.price, self.amount, self.discount, self.fare, self.bookingID]
         self.submitButton.clicked.connect(lambda: self.BookTicket(boxes, details, frame, 0))
         self.cancelButton.clicked.connect(lambda: self.tabWidget.setCurrentIndex(0))
         self.SeatsBox.valueChanged.connect(lambda: self._update2to18(self.SeatsBox.value(), self.Age2t18Box, self.BookDetails))
@@ -72,46 +75,57 @@ class MainWindow(QtWidgets.QMainWindow):
         global out
         out = [ self.cnicOutput, self.NameOutput, self.FromOutput, self.ToOutput, self.DateOutput, self.DayOutput, self.TimeOutput, self.TypeOutput, self.SeatsOutput]
         self.ViewReservationButton.clicked.connect(lambda: self.tabWidget.setCurrentIndex(2))
-        self.ViewReservationButton.clicked.connect(lambda: self.ViewReservation(self.NameInput.text(), self.cnicInput.text(), out, self.ViewTicketFrame))
+        self.ViewReservationButton.clicked.connect(lambda: self.ViewReservation(self.NameInput.text(), self.cnicInput.text(), out, self.ViewTicketFrame, self.MessageFrameView))
         L = [self.FareFrame, self.BookingDetailsFrame1, self.AvailableCombo, self.NameInput, self.cnicInput, self.SuggestedTime, self.Above60Box, self.SeatsBox, 
              self.Age2t18Box, self.BookDetails, self.dobInput, self.departureInput, self.destinationInput, self.DateInput, self.TypeInput, self.timeInput]
         self.ViewReservationButton.clicked.connect(lambda: self.SetDefault(L))
         self.MenuButtonBookingTab.clicked.connect(lambda: self.tabWidget.setCurrentIndex(0))
         
         self.ViewTicketFrame.hide()
-        self.NameInputBox.textChanged.connect(lambda: self.CorrectName(self.NameInputBox, self.ViewSubmit))
+        self.MessageFrameView.hide()
+        self.BookingInputBox.textChanged.connect(lambda: self.CorrectBooking(self.BookingInputBox, self.ViewSubmit))
         self.cnicInputBox.textChanged.connect(lambda: self.CorrectCNIC(self.cnicInputBox, self.ViewSubmit))
-        self.ViewSubmit.clicked.connect(lambda: self.ViewReservation(self.NameInputBox.text(), self.cnicInputBox.text(), out, self.ViewTicketFrame))
-        self.MenuButtonViewTab.clicked.connect(lambda: self.ReturnToMenu(self.ViewTicketFrame, self.NameInputBox, self.cnicInputBox))
+        self.ViewSubmit.clicked.connect(lambda: self.ViewReservation(self.BookingInputBox.text(), self.cnicInputBox.text(), out, self.ViewTicketFrame, self.MessageFrameView))
+        self.MenuButtonViewTab.clicked.connect(lambda: self.ReturnToMenu([self.ViewTicketFrame, self.MessageFrameView], self.BookingInputBox, self.cnicInputBox))
         
         self.CancelTicketFrame.hide()
-        self.NameInputCancel.textChanged.connect(lambda: self.CorrectName(self.NameInputCancel, self.CancelSubmit))
+        self.MessageFrameCancel.hide()
+        self.BookingInputCancel.textChanged.connect(lambda: self.CorrectBooking(self.BookingInputCancel, self.CancelSubmit))
         self.cnicInputCancel.textChanged.connect(lambda: self.CorrectCNIC(self.cnicInputCancel, self.CancelSubmit))
         self.CancelSubmit.clicked.connect(self.CancelBooking)
-        self.MenuButtonCancelTab.clicked.connect(lambda: self.ReturnToMenu(self.CancelTicketFrame, self.NameInputCancel, self.cnicInputCancel))
+        self.MenuButtonCancelTab.clicked.connect(lambda: self.ReturnToMenu([self.CancelTicketFrame, self.MessageFrameCancel], self.BookingInputCancel, self.cnicInputCancel))
                   
     def CorrectName(self, name, button):
         if not all(x.isalpha() or x.isspace() for x in name.text()) or (name.text() == ""):
-            name.setStyleSheet("border: 1px solid red;")
+            name.setStyleSheet("color: rgb(13, 49, 58);background-color: rgb(232, 246, 239);border-radius: 10px;border: 1px solid red;")
             button.setEnabled(False)
         else:
-            name.setStyleSheet("border: 1px solid black;")
+            name.setStyleSheet("color: rgb(13, 49, 58);background-color: rgb(232, 246, 239);border-radius: 10px;border: 1px solid black;")
             button.setEnabled(True)
             
-    def CorrectCNIC(self, cnic, button):
-        if not all(x.isdigit() for x in cnic.text()) or len(cnic.text()) < 13 or (cnic.text() == ""):
-            cnic.setStyleSheet("border: 1px solid red;")
+    def CorrectBooking(self, booking, button):
+        if not all(x.isdigit() for x in booking.text()) or len(booking.text()) < 13 or (booking.text() == ""):
+            booking.setStyleSheet("color: rgb(13, 49, 58);background-color: rgb(232, 246, 239);border-radius: 10px;border: 1px solid red;")
             button.setEnabled(False)
         else:
-            cnic.setStyleSheet("border: 1px solid black;")
+            booking.setStyleSheet("color: rgb(13, 49, 58);background-color: rgb(232, 246, 239);border-radius: 10px;border: 1px solid black;")
+            button.setEnabled(True)
+
+    def CorrectCNIC(self, cnic, button):
+        if not all(x.isdigit() for x in cnic.text()) or len(cnic.text()) < 13 or (cnic.text() == ""):
+            cnic.setStyleSheet("color: rgb(13, 49, 58);background-color: rgb(232, 246, 239);border-radius: 10px;border: 1px solid red;")
+            button.setEnabled(False)
+        else:
+            cnic.setStyleSheet("color: rgb(13, 49, 58);background-color: rgb(232, 246, 239);border-radius: 10px;border: 1px solid black;")
             button.setEnabled(True)
     
-    def ReturnToMenu(self, frame, name, cnic):
-        frame.hide()
+    def ReturnToMenu(self, frames, name, cnic):
+        for frame in frames:
+            frame.hide()
         name.setText("")
         cnic.setText("")
-        name.setStyleSheet("border: 1px solid black;")
-        cnic.setStyleSheet("border: 1px solid black;")
+        name.setStyleSheet("color: rgb(13, 49, 58);background-color: rgb(232, 246, 239);border-radius: 10px;border: 1px solid black;")
+        cnic.setStyleSheet("color: rgb(13, 49, 58);background-color: rgb(232, 246, 239);border-radius: 10px;border: 1px solid black;")
         self.tabWidget.setCurrentIndex(0)
         # self.message.setText("")
         
@@ -178,6 +192,7 @@ class MainWindow(QtWidgets.QMainWindow):
         combobox.clear()
         schedule = []
         diff = timedelta.max
+        nearest = ""
         with open("../data/schedule.txt") as op:
             for i in op:
                 item = ""
@@ -244,6 +259,9 @@ class MainWindow(QtWidgets.QMainWindow):
         rateframes[3].setText("Rs. "+str(price[1]))
         rateframes[4].setText("Rs. "+str(price[2]))
         rateframes[5].setText("Rs. "+str(price[3]))
+        # Booking ID dipalyed here
+        rateframes[6].setText("Booking ID here")
+
         
         s = ""
         for i in train101.keys():
@@ -369,10 +387,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 return []
         pass
         
-    def ViewReservation(self, name, cnic, outputs, frame):
+    def ViewReservation(self, name, cnic, outputs, frame, messageFrame):
         row = self.ReadFile(name, cnic)
         if row == []:
-            return None
+            messageFrame.show()
         else:
             frame.show()
             outputs[0].setText(row[0])
@@ -419,7 +437,7 @@ class MainWindow(QtWidgets.QMainWindow):
             dict_writer.writerows(lis)
     
     def CancelBooking(self):
-        name = self.NameInputCancel.text()
+        name = self.BookingInputCancel.text()
         cnic = self.cnicInputCancel.text()
         row = self.ReadFile(name, cnic)
         outCancel = [self.cnicOutputCancel, self.NameOutputCancel, self.FromOutputCancel, self.ToOutputCancel, 
@@ -429,7 +447,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if row == []:
             pass
         else:
-            self.ViewReservation(name, cnic, outCancel, self.CancelTicketFrame)
+            self.ViewReservation(name, cnic, outCancel, self.CancelTicketFrame, self.MessageFrameCancel)
             self.message.setText("Your Booking has been successfully cancelled! A refund of 50% has been transferred to your account.")
             self.RemoveBooking(row)
         
