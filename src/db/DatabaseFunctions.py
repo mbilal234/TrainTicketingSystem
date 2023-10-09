@@ -69,6 +69,10 @@ class DatabaseFunction:
         documents = list(self.schedule.find(query))
         print("The documents are ", type(documents), len(documents))
 
+        if len(documents) == 0:
+            print("No Trains Found")
+            return "No Trains Found"
+        
         time_object = datetime.strptime(str(date)+" "+time+":00", "%Y-%m-%d %H:%M:%S")
         first_shift_time = datetime.strptime(documents[0]["timestamp"], "%Y-%m-%d %H:%M:%S")
         second_shift_time = datetime.strptime(documents[1]["timestamp"], "%Y-%m-%d %H:%M:%S")

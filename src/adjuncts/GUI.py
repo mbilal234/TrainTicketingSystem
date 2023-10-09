@@ -269,7 +269,9 @@ class MainWindow(QtWidgets.QMainWindow):
         times = travelIDs['times']
         print(times)
         for i in times:
-            if i == details["Time"]:
+            print(i)
+            print(details["Time"])
+            if  details["Time"] in i:
                 travelID = travelIDs['times'][i]
         
         self.db.book_ticket(details["BookingID"], details["Name"], travelID, str(details["DOB"]), 0, details["Kids"], details["Elderly"], details["SeatNumber"].split(','))
