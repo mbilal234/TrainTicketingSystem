@@ -40,7 +40,6 @@ class MainWindow(QtWidgets.QMainWindow):
     - FinalSelection(details, box, rateframes): Finalizes the ticket booking with fare details and seat allocation.
     - BookTicket(inputbox, moredetails, frame, signal): Handles the booking process, input validation, and seat selection.
     - SetDefault(L): Resets input fields and enables passenger details input for a new booking.
-    - UpdateReservation(): Handles updating an existing reservation.
     - ReadFile(name, cnic): Reads passenger information from the CSV file.
     - ViewReservation(name, cnic, outputs, frame): Views passenger reservation details.
     - RemoveBooking(details): Removes a passenger's booking, releasing the booked seats.
@@ -274,7 +273,9 @@ class MainWindow(QtWidgets.QMainWindow):
         except:
             pass
         print("Details are",details)
-        self.db.book_ticket(details["BookingID"], details["Name"], details["BookingID"], str(details["DOB"]), 0, details["Kids"], details["Elderly"], details["Seats"])
+        travelID = self.db.get_seats_and_time(details["Departure"], details["Destination"], details["Date"], details["Time"], details["Type"])
+        print(travelID)
+        self.db.book_ticket(details["BookingID"], details["Name"], details["BookingID"], str(details["DOB"]), 0, details["Kids"], details["Elderly"], details["SeatNumber"].split(','))
         with open('TrainReservation.csv', mode='a') as file:
             keys = ["BookingID", "Name", "DOB", "Departure", "Destination", "Date", "Day", 
                     "Time", "Type", "Seats", "Berth", "FareCost", "Elderly", "Kids", "SeatNumber"]
@@ -338,31 +339,6 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 i.setEnabled(True)    
         
-    def UpdateReservation(self):
-        name = self.NameInputUpdate.text()
-        cnic = self.cnicInputUpdate.text()
-        row = self.ReadFile(name, cnic)
-        if row == []:
-            pass
-        else:
-            self.dobInputUpdate.setDate(QDate.fromString(row[2], "yyyy-MM-dd"))
-            in_box = [self.NameInputUpdate, self.cnicInputUpdate, self.dobInputUpdate, self.departureInputUpdate, self.destinationInputUpdate, self.DateInputUpdate, self.TypeInputUpdate, self.timeInputUpdate, self.UpdateRes]
-            details_out = [self.AvailableComboUpdate, self.SuggestedTimeUpdate, self.SeatsBoxUpdate, self.Under2BoxUpdate, self.Age2t18BoxUpdate, self.Above60BoxUpdate, row, self.UpdateDetails, self.BerthBoxUpdate]
-            frame = [self.UpdateBookingFrame, self.FareFrameU, self.priceU, self.amountUpdate, self.discountUpdate, self.fareUpdate]
-            self.UpdateBookingFrame.show()
-            self.departureInputUpdate.setCurrentText(row[3])
-            self.destinationInputUpdate.setCurrentText(row[4])
-            self.DateInputUpdate.setDate(QDate.fromString(row[5], "yyyy-MM-dd"))
-            self.timeInputUpdate.setTime(QTime.fromString(row[7], "hh:mm"))
-            self.TypeInputUpdate.setCurrentText(row[8])
-            if int(row[9]) > 0:
-                self.SeatsBoxUpdate.setValue(int(row[9]))
-            else:
-                self.SeatsBoxUpdate.setValue(int(row[10]))
-            self.Above60BoxUpdate.setValue(int(row[12]))
-            self.Age2t18BoxUpdate.setValue(int(row[13]))
-            self.UpdateRes.clicked.connect(lambda: self.BookTicket(in_box, details_out, frame, 1))
-        
     def ReadFile(self, name, cnic):
         with open('TrainReservation.csv', 'r') as file:
             w = csv.reader(file)
@@ -374,22 +350,39 @@ class MainWindow(QtWidgets.QMainWindow):
         pass
         
     def ViewReservation(self, name, cnic, outputs, frame):
-        details = self.db.view_booking(3899,cnic) #name needs to be the booking ID!
+        details = self.db.view_booking(int(name),cnic) #name needs to be the booking ID!
+        '''
+        view_document = {
+            "bookingId": bookingId, 
+            "timestamp": str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
+            "cnic": cnic,
+            "name": booking["name"],
+            "dateOfBirth": booking["dateOfBirth"],
+            "travelId": booking["travelId"],
+            "departure": train_reserved["departure"],
+            "destination": train_reserved["destination"],
+            "numberOfSeats" : booking["numberOfSeats"],
+            "numUnderTwo": booking["numUnderTwo"],
+            "numYoung": booking["numYoung"],
+            "numAged": booking["numAged"],
+            "cost": booking["cost"],
+            "seats": seats,
+        }'''
         print(details)
         row = self.ReadFile(name, cnic)
         if row == []:
             return None
         else:
             frame.show()
-            outputs[0].setText(details[0]['cnic'])
-            outputs[1].setText(details[0]['name'])
-            outputs[2].setText(row[3])
-            outputs[3].setText(row[4])
-            outputs[4].setText(row[5])
-            outputs[5].setText(row[6])
-            outputs[6].setText(row[7])
-            outputs[7].setText(row[8])
-            outputs[8].setText(row[14])
+            outputs[0].setText(details['cnic'])
+            outputs[1].setText(details['name'])
+            outputs[2].setText(details['departure'])
+            outputs[3].setText(details['destination'])
+            outputs[4].setText(details['dateOfBirth'])
+            outputs[5].setText(details['numberOfSeats'])
+            outputs[6].setText(details['travelId'])
+            outputs[7].setText(details['timestamp'])
+            outputs[8].setText(details['cost'])
     
     def RemoveBooking(self,  details):
         L = []

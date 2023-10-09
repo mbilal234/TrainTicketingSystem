@@ -65,12 +65,16 @@ class DatabaseFunction:
         
         pattern = f"^{date}"
         query = { "departure": departure, "destination": destination, "timestamp": { "$regex": pattern, "$options": "i"}}
+        #CURRENT ISSUE IS THAT DATE ON GUI IS UPTILL 2022, while in DATABASE IT IS AFTER 2023
         documents = self.schedule.find(query)
+        print("The documents are ", list(documents))
+        
 
-        time_object = datetime.strptime(date+" "+time, "%Y-%m-%d %H:%M:%S")
+        time_object = datetime.strptime(str(date)+" "+time+":00", "%Y-%m-%d %H:%M:%S")
         first_shift_time = datetime.strptime(documents[0]["timestamp"], "%Y-%m-%d %H:%M:%S")
         second_shift_time = datetime.strptime(documents[1]["timestamp"], "%Y-%m-%d %H:%M:%S")
-
+    
+        
         if abs(first_shift_time - time_object) < abs(second_shift_time - time_object):
             suggested_time = first_shift_time
             second_option_time = second_shift_time
@@ -108,6 +112,7 @@ class DatabaseFunction:
                 }
             }
         ]))
+    
 
         all_seats = []
         for i in seats:
