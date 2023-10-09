@@ -66,9 +66,8 @@ class DatabaseFunction:
         pattern = f"^{date}"
         query = { "departure": departure, "destination": destination, "timestamp": { "$regex": pattern, "$options": "i"}}
         #CURRENT ISSUE IS THAT DATE ON GUI IS UPTILL 2022, while in DATABASE IT IS AFTER 2023
-        documents = self.schedule.find(query)
-        print("The documents are ", list(documents))
-        
+        documents = list(self.schedule.find(query))
+        print("The documents are ", type(documents), len(documents))
 
         time_object = datetime.strptime(str(date)+" "+time+":00", "%Y-%m-%d %H:%M:%S")
         first_shift_time = datetime.strptime(documents[0]["timestamp"], "%Y-%m-%d %H:%M:%S")
@@ -220,8 +219,11 @@ class DatabaseFunction:
         
         for i in seats:
             seat_document = self.seats.find_one({"seatNumber": i})
-            if seat_document["bookingId"]:
-                return "The Seat "+str(i)+" is already booked."
+            try:
+                if seat_document["bookingId"]:
+                    return "The Seat "+str(i)+" is already booked."
+            except:
+                pass
         
         self.bookings.insert_one(booking_document)
 

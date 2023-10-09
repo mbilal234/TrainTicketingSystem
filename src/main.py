@@ -22,7 +22,7 @@ def main():
     8. Runs the QApplication event loop.
 
     Args:
-        None
+        Non
 
     Returns:
         None

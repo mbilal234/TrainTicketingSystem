@@ -17,6 +17,7 @@ import json
 from adjuncts import ScheduleMaker, TrainsMaker, CustomerInformation
 from db import DatabaseConnection, DatabaseFunctions
 
+
 directory = os.getcwd()
     
 class MainWindow(QtWidgets.QMainWindow):
@@ -40,6 +41,7 @@ class MainWindow(QtWidgets.QMainWindow):
     - FinalSelection(details, box, rateframes): Finalizes the ticket booking with fare details and seat allocation.
     - BookTicket(inputbox, moredetails, frame, signal): Handles the booking process, input validation, and seat selection.
     - SetDefault(L): Resets input fields and enables passenger details input for a new booking.
+    - UpdateReservation(): Handles updating an existing reservation.
     - ReadFile(name, cnic): Reads passenger information from the CSV file.
     - ViewReservation(name, cnic, outputs, frame): Views passenger reservation details.
     - RemoveBooking(details): Removes a passenger's booking, releasing the booked seats.
@@ -50,10 +52,10 @@ class MainWindow(QtWidgets.QMainWindow):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.db = DatabaseFunctions.DatabaseFunction()
         uic.loadUi(directory+r"\\train.ui", self)
         self.setWindowTitle("Train Reservation System")
         self.setWindowIcon(QtGui.QIcon("assets\\train.png"))
+        self.db = DatabaseFunctions.DatabaseFunction()
 
         self.BookButton.clicked.connect(lambda: self.tabWidget.setCurrentIndex(1))
         self.ViewButton.clicked.connect(lambda: self.tabWidget.setCurrentIndex(2))
@@ -167,12 +169,11 @@ class MainWindow(QtWidgets.QMainWindow):
             with open("../data/Trains.txt","r") as file:
                 train100=file.readlines()
                 d = 0
-                print('"Type": "'+t_type.lower()+'", "Day": "'+day+'", "Time": '+'"'+time+'", '+ '"'+dept.lower()+'": "'+dest.lower()+'"')
                 for i in train100:
                     if '"Type": "'+t_type.lower()+'", "Day": "'+day+'", "Time": '+'"'+time+'", '+ '"'+dept.lower()+'": "'+dest.lower()+'"' in i:
                         d=train100.index(i)
                         break
-                print("The value of d is:", d)
+                
                 train101=json.loads(train100[d])
             
             if t_type == "Business":
@@ -261,9 +262,17 @@ class MainWindow(QtWidgets.QMainWindow):
         rateframes[3].setText("Rs. "+str(price[1]))
         rateframes[4].setText("Rs. "+str(price[2]))
         rateframes[5].setText("Rs. "+str(price[3]))
-        # Booking ID dipalyed here
+        # Booking ID displayed here
         rateframes[6].setText("Booking ID here")
-
+        travelIDs = self.db.get_seats_and_time(details["Departure"], details["Destination"], details["Date"], details["Time"], details["Type"])
+        print(travelIDs)
+        times = travelIDs['times']
+        print(times)
+        for i in times:
+            if i == details["Time"]:
+                travelID = travelIDs['times'][i]
+        
+        self.db.book_ticket(details["BookingID"], details["Name"], travelID, str(details["DOB"]), 0, details["Kids"], details["Elderly"], details["SeatNumber"].split(','))
         
         s = ""
         for i in train101.keys():
@@ -290,10 +299,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 file.write(json.dumps(train101))
         except:
             pass
-        print("Details are",details)
-        travelID = self.db.get_seats_and_time(details["Departure"], details["Destination"], details["Date"], details["Time"], details["Type"])
-        print(travelID)
-        self.db.book_ticket(details["BookingID"], details["Name"], details["BookingID"], str(details["DOB"]), 0, details["Kids"], details["Elderly"], details["SeatNumber"].split(','))
+        
         with open('TrainReservation.csv', mode='a') as file:
             keys = ["BookingID", "Name", "DOB", "Departure", "Destination", "Date", "Day", 
                     "Time", "Type", "Seats", "Berth", "FareCost", "Elderly", "Kids", "SeatNumber"]
@@ -357,6 +363,31 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 i.setEnabled(True)    
         
+    def UpdateReservation(self):
+        name = self.NameInputUpdate.text()
+        cnic = self.cnicInputUpdate.text()
+        row = self.ReadFile(name, cnic)
+        if row == []:
+            pass
+        else:
+            self.dobInputUpdate.setDate(QDate.fromString(row[2], "yyyy-MM-dd"))
+            in_box = [self.NameInputUpdate, self.cnicInputUpdate, self.dobInputUpdate, self.departureInputUpdate, self.destinationInputUpdate, self.DateInputUpdate, self.TypeInputUpdate, self.timeInputUpdate, self.UpdateRes]
+            details_out = [self.AvailableComboUpdate, self.SuggestedTimeUpdate, self.SeatsBoxUpdate, self.Under2BoxUpdate, self.Age2t18BoxUpdate, self.Above60BoxUpdate, row, self.UpdateDetails, self.BerthBoxUpdate]
+            frame = [self.UpdateBookingFrame, self.FareFrameU, self.priceU, self.amountUpdate, self.discountUpdate, self.fareUpdate]
+            self.UpdateBookingFrame.show()
+            self.departureInputUpdate.setCurrentText(row[3])
+            self.destinationInputUpdate.setCurrentText(row[4])
+            self.DateInputUpdate.setDate(QDate.fromString(row[5], "yyyy-MM-dd"))
+            self.timeInputUpdate.setTime(QTime.fromString(row[7], "hh:mm"))
+            self.TypeInputUpdate.setCurrentText(row[8])
+            if int(row[9]) > 0:
+                self.SeatsBoxUpdate.setValue(int(row[9]))
+            else:
+                self.SeatsBoxUpdate.setValue(int(row[10]))
+            self.Above60BoxUpdate.setValue(int(row[12]))
+            self.Age2t18BoxUpdate.setValue(int(row[13]))
+            self.UpdateRes.clicked.connect(lambda: self.BookTicket(in_box, details_out, frame, 1))
+        
     def ReadFile(self, name, cnic):
         with open('TrainReservation.csv', 'r') as file:
             w = csv.reader(file)
@@ -367,31 +398,12 @@ class MainWindow(QtWidgets.QMainWindow):
                 return []
         pass
         
-    def ViewReservation(self, name, cnic, outputs, frame):
-        details = self.db.view_booking(int(name),cnic) #name needs to be the booking ID!
-        '''
-        view_document = {
-            "bookingId": bookingId, 
-            "timestamp": str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
-            "cnic": cnic,
-            "name": booking["name"],
-            "dateOfBirth": booking["dateOfBirth"],
-            "travelId": booking["travelId"],
-            "departure": train_reserved["departure"],
-            "destination": train_reserved["destination"],
-            "numberOfSeats" : booking["numberOfSeats"],
-            "numUnderTwo": booking["numUnderTwo"],
-            "numYoung": booking["numYoung"],
-            "numAged": booking["numAged"],
-            "cost": booking["cost"],
-            "seats": seats,
-        }'''
-        print(details)
+    def ViewReservation(self, name, cnic, outputs, frame, messageFrame):
+        details = self.db.view_booking(int(name),cnic)
         row = self.ReadFile(name, cnic)
         if row == []:
             messageFrame.show()
         else:
-            frame.show()
             outputs[0].setText(details['cnic'])
             outputs[1].setText(details['name'])
             outputs[2].setText(details['departure'])
@@ -404,9 +416,6 @@ class MainWindow(QtWidgets.QMainWindow):
     
     def RemoveBooking(self,  details):
         L = []
-        print(details)
-        #Change First argument to booking ID that needs to be cancelled!
-        self.db.cancel_booking(3899, details[0])
         with open("Trains.txt") as op:
             for i in op:
                 L.append(i)
@@ -449,7 +458,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if row == []:
             pass
         else:
-            self.ViewReservation(name, cnic, outCancel, self.CancelTicketFrame)
+            self.ViewReservation(name, cnic, outCancel, self.CancelTicketFrame, self.MessageFrameCancel)
             self.message.setText("Your Booking has been successfully cancelled! A refund of 50% has been transferred to your account.")
             self.RemoveBooking(row)
         
