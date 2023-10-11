@@ -248,6 +248,7 @@ class DatabaseFunction:
             return "No CNIC Number Specified"
 
         booking = self.bookings.find_one({"bookingId": bookingId, "cnic": cnic})
+        print("The booking ID is", booking)
         seats = []
         if booking:
             all_seats = self.seats.find({"bookingId": bookingId})
@@ -255,6 +256,7 @@ class DatabaseFunction:
                 seats.append(i["seatNumber"])  
 
         train_reserved = self.schedule.find_one({"travelId": booking["travelId"]})
+        print("The travel ID is", train_reserved)
 
         view_document = {
             "bookingId": bookingId, 
@@ -314,8 +316,8 @@ if __name__=="__main__":
     # print(doc)
 
     # Code for viewing
-    # booking = df.view_booking(3896, "///////////")
-    # print(booking)
+    booking = df.view_booking(3897, "1111111111112")
+    print(booking)
 
     # Code for cancelling
     # result = df.cancel_booking(3896, "//////////")

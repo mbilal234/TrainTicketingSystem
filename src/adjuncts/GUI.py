@@ -70,6 +70,7 @@ class MainWindow(QtWidgets.QMainWindow):
         boxes = [self.NameInput, self.cnicInput, self.dobInput, self.departureInput, self.destinationInput, self.DateInput, self.TypeInput, self.timeInput, self.submitButton]
         details = [self.AvailableCombo, self.SuggestedTime, self.SeatsBox, self.Under2Box, self.Age2t18Box, self.Above60Box, self.BookDetails, self.BerthBox]
         frame = [self.BookingDetailsFrame1, self.FareFrame, self.price, self.amount, self.discount, self.fare, self.bookingID]
+        # self.BerthBox.currentTextChanged.connect(lambda: self.MaxSeats(train101, self.TypeInput.currentText(), self.BerthBox.currentText()))
         self.submitButton.clicked.connect(lambda: self.BookTicket(boxes, details, frame, 0))
         self.cancelButton.clicked.connect(lambda: self.tabWidget.setCurrentIndex(0))
         self.SeatsBox.valueChanged.connect(lambda: self._update2to18(self.SeatsBox.value(), self.Age2t18Box, self.BookDetails))
@@ -402,19 +403,21 @@ class MainWindow(QtWidgets.QMainWindow):
         
     def ViewReservation(self, name, cnic, outputs, frame, messageFrame):
         details = self.db.view_booking(int(name),cnic)
+        print("The booking details are", details)
         row = self.ReadFile(name, cnic)
-        if row == []:
+        if details == None:
             messageFrame.show()
         else:
+            frame.show()
             outputs[0].setText(details['cnic'])
             outputs[1].setText(details['name'])
             outputs[2].setText(details['departure'])
             outputs[3].setText(details['destination'])
             outputs[4].setText(details['dateOfBirth'])
-            outputs[5].setText(details['numberOfSeats'])
-            outputs[6].setText(details['travelId'])
+            outputs[5].setText(str(details['numberOfSeats']))
+            outputs[6].setText(str(details['travelId']))
             outputs[7].setText(details['timestamp'])
-            outputs[8].setText(details['cost'])
+            outputs[8].setText(str(details['cost']))
     
     def RemoveBooking(self,  details):
         L = []
