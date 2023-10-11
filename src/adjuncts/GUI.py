@@ -107,7 +107,7 @@ class MainWindow(QtWidgets.QMainWindow):
             button.setEnabled(True)
             
     def CorrectBooking(self, booking, button):
-        if not all(x.isdigit() for x in booking.text()) or len(booking.text()) < 3 or (booking.text() == ""):
+        if not all(x.isdigit() for x in booking.text()) or len(booking.text()) not in [4, 5] or (booking.text() == ""):
             booking.setStyleSheet("color: rgb(13, 49, 58);background-color: rgb(232, 246, 239);border-radius: 10px;border: 1px solid red;")
             button.setEnabled(False)
         else:
@@ -452,10 +452,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def CancelBooking(self):
         name = self.BookingInputCancel.text()
         cnic = self.cnicInputCancel.text()
-        try:
-            self.db.cancel_booking(name,cnic)
-        except:
-            print("Not removed!!!")
         row = self.ReadFile(name, cnic)
         outCancel = [self.cnicOutputCancel, self.NameOutputCancel, self.FromOutputCancel, self.ToOutputCancel, 
                      self.DateOutputCancel, self.DayOutputCancel, self.TimeOutputCancel, 
