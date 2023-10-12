@@ -9,7 +9,6 @@ This is a Train Reservation System built with PyQt5 for Python. It allows users 
 - **Seat Selection:** The system suggests available train times and seat/berth options based on user preferences.
 - **Fare Calculation:** Fare costs are calculated based on the type of booking, number of seats, and other factors.
 - **View Reservations:** Users can view their reservations by entering their name and CNIC.
-- **Update Bookings:** Users can update their bookings by providing their name and CNIC.
 - **Cancellation:** Users can cancel their bookings, and refunds are processed accordingly.
 
 ## How to Use
