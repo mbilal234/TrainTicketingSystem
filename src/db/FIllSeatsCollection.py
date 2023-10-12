@@ -23,10 +23,10 @@ class FillSeatsCollection:
 
         for i in self.complete_schedule:
             for j in range(1, 101):
-                self.seats.append({"class": "economy", "seatNumber": j, "travelId": i["travelId"], "bookingId": None})
+                self.seats.append({"class": "economy", "seatNumber": str(j), "travelId": i["travelId"], "bookingId": None})
             for j in range(6):
                 for k in range(6):
-                    self.seats.append({"class": "business", "seatNumber": chr(65+j)+str(k), "travelId": i["travelId"], "bookingId": None})
+                    self.seats.append({"class": "business", "seatNumber": chr(65+j)+str(k+1), "travelId": i["travelId"], "bookingId": None})
 
     def save_documents(self):
         """
