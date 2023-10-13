@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils.TrainsMaker &mdash; Train Reservation System 00.00.01 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=d7bb8d4d"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Train Reservation System
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../src.html">src package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Train Reservation System</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">utils.TrainsMaker</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for utils.TrainsMaker</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">Train</span>  <span class="c1"># Assuming &#39;Train&#39; class is imported from an external module.</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<div class="viewcode-block" id="TrainsMaker">
+<a class="viewcode-back" href="../../utils.html#utils.TrainsMaker.TrainsMaker">[docs]</a>
+<span class="k">class</span> <span class="nc">TrainsMaker</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The TrainsMaker class generates and manages train objects, allowing the creation of train schedules.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">    - depts (list): A list of departure locations.</span>
+<span class="sd">    - arrival (list): A list of arrival locations.</span>
+<span class="sd">    - days (list): A list of days of the week.</span>
+<span class="sd">    - types (list): A list of train types or categories.</span>
+<span class="sd">    - id (int): An identifier for train objects.</span>
+<span class="sd">    - times (list): A list of departure times.</span>
+<span class="sd">    - t_num (int): An internal variable to keep track of time index during train generation.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">    - generate_train_objects(): Generates a list of train objects based on provided attributes.</span>
+<span class="sd">    - get_seats(train_type): Returns a dictionary representing available seats based on the train type.</span>
+<span class="sd">    - save_trains_to_file(train_objects): Saves train objects to a &#39;Trains.txt&#39; file in JSON format.</span>
+
+<span class="sd">    Example Usage:</span>
+<span class="sd">    trains_maker = TrainsMaker()  # Create an instance of the TrainsMaker class.</span>
+<span class="sd">    train_objects = trains_maker.generate_train_objects()  # Generate train objects.</span>
+<span class="sd">    trains_maker.save_trains_to_file(train_objects)  # Save train objects to a file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">depts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;karachi&quot;</span><span class="p">,</span> <span class="s2">&quot;lahore&quot;</span><span class="p">,</span> <span class="s2">&quot;rawalpindi&quot;</span><span class="p">,</span> <span class="s2">&quot;quetta&quot;</span><span class="p">,</span> <span class="s2">&quot;peshawar&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arrival</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;karachi&quot;</span><span class="p">,</span> <span class="s2">&quot;lahore&quot;</span><span class="p">,</span> <span class="s2">&quot;rawalpindi&quot;</span><span class="p">,</span> <span class="s2">&quot;quetta&quot;</span><span class="p">,</span> <span class="s2">&quot;peshawar&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">days</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;MON&quot;</span><span class="p">,</span> <span class="s2">&quot;MON&quot;</span><span class="p">,</span> <span class="s2">&quot;TUE&quot;</span><span class="p">,</span> <span class="s2">&quot;TUE&quot;</span><span class="p">,</span> <span class="s2">&quot;WED&quot;</span><span class="p">,</span> <span class="s2">&quot;WED&quot;</span><span class="p">,</span> <span class="s2">&quot;THU&quot;</span><span class="p">,</span> <span class="s2">&quot;THU&quot;</span><span class="p">,</span> <span class="s2">&quot;FRI&quot;</span><span class="p">,</span> <span class="s2">&quot;FRI&quot;</span><span class="p">,</span> <span class="s2">&quot;SAT&quot;</span><span class="p">,</span> <span class="s2">&quot;SAT&quot;</span><span class="p">,</span> <span class="s2">&quot;SUN&quot;</span><span class="p">,</span> <span class="s2">&quot;SUN&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">types</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;economy&quot;</span><span class="p">,</span> <span class="s2">&quot;business&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">1001</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">times</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;0800&quot;</span><span class="p">,</span> <span class="s2">&quot;1600&quot;</span><span class="p">,</span> <span class="s2">&quot;0900&quot;</span><span class="p">,</span> <span class="s2">&quot;1700&quot;</span><span class="p">,</span> <span class="s2">&quot;1000&quot;</span><span class="p">,</span> <span class="s2">&quot;1800&quot;</span><span class="p">,</span> <span class="s2">&quot;1100&quot;</span><span class="p">,</span> <span class="s2">&quot;1900&quot;</span><span class="p">,</span> <span class="s2">&quot;1200&quot;</span><span class="p">,</span> <span class="s2">&quot;2000&quot;</span><span class="p">,</span> <span class="s2">&quot;1300&quot;</span><span class="p">,</span> <span class="s2">&quot;2100&quot;</span><span class="p">,</span> <span class="s2">&quot;1400&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;2200&quot;</span><span class="p">,</span> <span class="s2">&quot;1500&quot;</span><span class="p">,</span> <span class="s2">&quot;2300&quot;</span><span class="p">,</span> <span class="s2">&quot;0830&quot;</span><span class="p">,</span> <span class="s2">&quot;1630&quot;</span><span class="p">,</span> <span class="s2">&quot;0930&quot;</span><span class="p">,</span> <span class="s2">&quot;1730&quot;</span><span class="p">,</span> <span class="s2">&quot;1030&quot;</span><span class="p">,</span> <span class="s2">&quot;1830&quot;</span><span class="p">,</span> <span class="s2">&quot;1130&quot;</span><span class="p">,</span> <span class="s2">&quot;1930&quot;</span><span class="p">,</span> <span class="s2">&quot;1230&quot;</span><span class="p">,</span> <span class="s2">&quot;2030&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;1330&quot;</span><span class="p">,</span> <span class="s2">&quot;2130&quot;</span><span class="p">,</span> <span class="s2">&quot;1430&quot;</span><span class="p">,</span> <span class="s2">&quot;2230&quot;</span><span class="p">,</span> <span class="s2">&quot;1530&quot;</span><span class="p">,</span> <span class="s2">&quot;2330&quot;</span>
+        <span class="p">]</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t_num</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="TrainsMaker.generate_train_objects">
+<a class="viewcode-back" href="../../utils.html#utils.TrainsMaker.TrainsMaker.generate_train_objects">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_train_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates a list of train objects based on predefined attributes.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        list: A list of Train objects representing generated trains.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">train_objects</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">departure</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">depts</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">arrival</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrival</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">departure</span> <span class="o">!=</span> <span class="n">arrival</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">days</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">train_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">types</span><span class="p">:</span>
+                            <span class="n">train_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+                            <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">t_num</span><span class="p">]</span>
+                            <span class="n">seats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_seats</span><span class="p">(</span><span class="n">train_type</span><span class="p">)</span>
+                            <span class="n">train</span> <span class="o">=</span> <span class="n">Train</span><span class="o">.</span><span class="n">Train</span><span class="p">(</span><span class="n">train_id</span><span class="p">,</span> <span class="n">train_type</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">departure</span><span class="p">,</span> <span class="n">arrival</span><span class="p">,</span> <span class="n">seats</span><span class="p">)</span>
+                            <span class="n">train_objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">t_num</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">train_objects</span></div>
+
+
+<div class="viewcode-block" id="TrainsMaker.get_seats">
+<a class="viewcode-back" href="../../utils.html#utils.TrainsMaker.TrainsMaker.get_seats">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_seats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_type</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a dictionary representing available seats based on the train type.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        - train_type (str): The type or category of the train (&quot;economy&quot; or &quot;business&quot;).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        dict: A dictionary representing available seats.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">train_type</span> <span class="o">==</span> <span class="s2">&quot;economy&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">):</span> <span class="kc">True</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">31</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="k">elif</span> <span class="n">train_type</span> <span class="o">==</span> <span class="s2">&quot;business&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">class_letter</span><span class="si">}{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="kc">True</span> <span class="k">for</span> <span class="n">class_letter</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+            <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="TrainsMaker.save_trains_to_file">
+<a class="viewcode-back" href="../../utils.html#utils.TrainsMaker.TrainsMaker.save_trains_to_file">[docs]</a>
+    <span class="k">def</span> <span class="nf">save_trains_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_objects</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves train objects to a &#39;Trains.txt&#39; file in JSON format.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        - train_objects (list): A list of Train objects to be saved.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Define the data directory path (assuming it&#39;s at the same level as &#39;src&#39;)</span>
+        <span class="n">data_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+        
+        <span class="c1"># Ensure the &#39;data&#39; directory exists, create it if it doesn&#39;t</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">data_directory</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">data_directory</span><span class="p">)</span>
+        
+        <span class="c1"># Define the file path for Trains.txt</span>
+        <span class="n">trains_txt_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;Trains.txt&#39;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">trains_txt_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">train</span> <span class="ow">in</span> <span class="n">train_objects</span><span class="p">:</span>
+                <span class="n">train_data</span> <span class="o">=</span> <span class="n">train</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Muhammad Bilal | Muhammad Ashhub Ali | Abdul Arham.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

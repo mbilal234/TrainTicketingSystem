@@ -1,4 +1,5 @@
-from DatabaseConnection import db   
+# from DatabaseConnection import db
+#ERRORED IMPORT, NEED FIXING   
 
 class FillFaresCollection:
     """This class is built with the purpose of filling the fares collection in the database
@@ -38,9 +39,7 @@ class FillFaresCollection:
 
 
 if __name__=="__main__":
-    ffc = FillFaresCollection()
-    ffc.generate_documents()
-    ffc.save_documents()
+    print(help(FillFaresCollection))
 
 
         

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>db.DatabaseFunctions &mdash; Train Reservation System 00.00.01 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=d7bb8d4d"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Train Reservation System
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../src.html">src package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Train Reservation System</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">db.DatabaseFunctions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for db.DatabaseFunctions</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">db</span> <span class="kn">import</span> <span class="n">DatabaseConnection</span>
+
+<div class="viewcode-block" id="DatabaseFunction">
+<a class="viewcode-back" href="../../db.html#db.DatabaseFunctions.DatabaseFunction">[docs]</a>
+<span class="k">class</span> <span class="nc">DatabaseFunction</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class contains all the database functionality</span>
+<span class="sd">    The main aim of the class is to provide function for data storage and retrieval</span>
+<span class="sd">    The class currently has four functions</span>
+<span class="sd">    The get_fare() function fetches the fare from the database</span>
+<span class="sd">    Fares have been set based on the departure and arrival cities</span>
+<span class="sd">    The get_seats_and_time() function fetches all the seats for economy class and provides the suggested timings</span>
+<span class="sd">    The get_business_seats() fetches the seats from database based on the selected berth</span>
+<span class="sd">    The book_ticket() function completes the booking process</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">DatabaseConnection</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fares</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;fares&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;schedule&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bookings</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;bookings&quot;</span><span class="p">]</span>  
+        <span class="bp">self</span><span class="o">.</span><span class="n">seats</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;seats&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fare</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="DatabaseFunction.get_fare">
+<a class="viewcode-back" href="../../db.html#db.DatabaseFunctions.DatabaseFunction.get_fare">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_fare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">departure</span><span class="p">,</span> <span class="n">destination</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The function gets the fare from the database based on the departure and arrival cities selected</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">departure</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No Departure City Specified&quot;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">destination</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No Destination City Specified&quot;</span>
+
+        <span class="n">fare_query</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;$or&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;firstCity&quot;</span><span class="p">:</span> <span class="n">departure</span><span class="p">,</span> <span class="s2">&quot;secondCity&quot;</span><span class="p">:</span> <span class="n">destination</span> <span class="p">},</span> <span class="p">{</span><span class="s2">&quot;firstCity&quot;</span><span class="p">:</span> <span class="n">destination</span><span class="p">,</span> <span class="s2">&quot;secondCity&quot;</span><span class="p">:</span> <span class="n">departure</span><span class="p">}]}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fare</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fares</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">fare_query</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;price&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fare</span></div>
+
+
+<div class="viewcode-block" id="DatabaseFunction.get_seats_and_time">
+<a class="viewcode-back" href="../../db.html#db.DatabaseFunctions.DatabaseFunction.get_seats_and_time">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_seats_and_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">departure</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">travelling_class</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The function has the aim to suggest the user with the nearest timing to the selected one</span>
+<span class="sd">        The function returns the remaining seats in train if case the user is travelling in economy class</span>
+<span class="sd">        The business class seats are suggested on the basis of berth and is handled in another function</span>
+<span class="sd">        The function takes departure, destination, date, time and the travelling_class in arguments</span>
+<span class="sd">        The function returns a dictionary and a list </span>
+<span class="sd">        The dictionary has the suggested times in their keys with the travelIds as values</span>
+<span class="sd">        The returned list has the suggested seats for the user or the remaining free seats</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">departure</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No Departure City Specified&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">destination</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No Destination City Specified&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">date</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No Departure Date Specified&quot;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">time</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No Departure Time Specified&quot;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">travelling_class</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No Travelling Class Specified&quot;</span>
+        
+        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;^</span><span class="si">{</span><span class="n">date</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;departure&quot;</span><span class="p">:</span> <span class="n">departure</span><span class="p">,</span> <span class="s2">&quot;destination&quot;</span><span class="p">:</span> <span class="n">destination</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;$regex&quot;</span><span class="p">:</span> <span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;$options&quot;</span><span class="p">:</span> <span class="s2">&quot;i&quot;</span><span class="p">}}</span>
+        <span class="c1">#CURRENT ISSUE IS THAT DATE ON GUI IS UPTILL 2022, while in DATABASE IT IS AFTER 2023</span>
+        <span class="n">documents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">query</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The documents are &quot;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">documents</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">documents</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No Trains Found&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;No Trains Found&quot;</span>
+        
+        <span class="n">time_object</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="n">time</span><span class="o">+</span><span class="s2">&quot;:00&quot;</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+        <span class="n">first_shift_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">documents</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+        <span class="n">second_shift_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">documents</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+    
+        
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">first_shift_time</span> <span class="o">-</span> <span class="n">time_object</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">second_shift_time</span> <span class="o">-</span> <span class="n">time_object</span><span class="p">):</span>
+            <span class="n">suggested_time</span> <span class="o">=</span> <span class="n">first_shift_time</span>
+            <span class="n">second_option_time</span> <span class="o">=</span> <span class="n">second_shift_time</span>
+            <span class="n">travel_id_1</span> <span class="o">=</span> <span class="n">documents</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;travelId&quot;</span><span class="p">]</span>
+            <span class="n">travel_id_2</span> <span class="o">=</span> <span class="n">documents</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;travelId&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">suggested_time</span> <span class="o">=</span> <span class="n">second_shift_time</span>
+            <span class="n">second_option_time</span> <span class="o">=</span> <span class="n">first_shift_time</span>
+            <span class="n">travel_id_2</span> <span class="o">=</span> <span class="n">documents</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;travelId&quot;</span><span class="p">]</span>
+            <span class="n">travel_id_1</span> <span class="o">=</span> <span class="n">documents</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;travelId&quot;</span><span class="p">]</span>
+        
+        <span class="n">seats</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">aggregate</span><span class="p">([</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;$match&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">suggested_time</span><span class="p">),</span>
+                    <span class="s2">&quot;departure&quot;</span><span class="p">:</span> <span class="n">departure</span><span class="p">,</span>
+                    <span class="s2">&quot;destination&quot;</span><span class="p">:</span> <span class="n">destination</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;$lookup&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="s2">&quot;seats&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;localField&quot;</span><span class="p">:</span> <span class="s2">&quot;travelId&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;foreignField&quot;</span><span class="p">:</span> <span class="s2">&quot;travelId&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;as&quot;</span><span class="p">:</span> <span class="s2">&quot;seats&quot;</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;$unwind&quot;</span><span class="p">:</span> <span class="s2">&quot;$seats&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;$match&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;seats.class&quot;</span><span class="p">:</span> <span class="n">travelling_class</span> <span class="k">if</span> <span class="n">travelling_class</span> <span class="o">==</span> <span class="s2">&quot;economy&quot;</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;seats.bookingId&quot;</span><span class="p">:</span> <span class="kc">None</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">]))</span>
+    
+
+        <span class="n">all_seats</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">seats</span><span class="p">:</span>
+            <span class="n">all_seats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;seats&quot;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;times&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">suggested_time</span><span class="p">):</span> <span class="n">travel_id_1</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">second_option_time</span><span class="p">):</span> <span class="n">travel_id_2</span><span class="p">},</span> <span class="s2">&quot;seats&quot;</span><span class="p">:</span> <span class="n">all_seats</span><span class="p">}</span></div>
+
+    
+
+<div class="viewcode-block" id="DatabaseFunction.get_business_seats">
+<a class="viewcode-back" href="../../db.html#db.DatabaseFunctions.DatabaseFunction.get_business_seats">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_business_seats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">travelId</span><span class="p">,</span> <span class="n">berth</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The function aims to fetch business class seats</span>
+<span class="sd">        The seats from the berth given in argument is fetched</span>
+<span class="sd">        The function takes travelId and berth in arguments which are used in query</span>
+<span class="sd">        This function returns a list of seats to suggest the user</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">travelId</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No Travel ID Specified&quot;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">berth</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No Berth Specified&quot;</span>
+        
+        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;^</span><span class="si">{</span><span class="n">berth</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="n">seats</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">aggregate</span><span class="p">([</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;$match&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;travelId&quot;</span><span class="p">:</span> <span class="n">travelId</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;$lookup&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="s2">&quot;seats&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;localField&quot;</span><span class="p">:</span> <span class="s2">&quot;travelId&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;foreignField&quot;</span><span class="p">:</span> <span class="s2">&quot;travelId&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;as&quot;</span><span class="p">:</span> <span class="s2">&quot;seats&quot;</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;$unwind&quot;</span><span class="p">:</span> <span class="s2">&quot;$seats&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;$match&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;seats.class&quot;</span><span class="p">:</span> <span class="s2">&quot;business&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;seats.seatNumber&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;$regex&quot;</span><span class="p">:</span> <span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;$options&quot;</span><span class="p">:</span> <span class="s2">&quot;i&quot;</span><span class="p">},</span>
+                    <span class="s2">&quot;seats.bookingId&quot;</span><span class="p">:</span> <span class="kc">None</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">]))</span>
+
+        <span class="n">all_seats</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">seats</span><span class="p">:</span>
+            <span class="n">all_seats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;seats&quot;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;seats&quot;</span><span class="p">:</span> <span class="n">all_seats</span><span class="p">}</span></div>
+
+    
+<div class="viewcode-block" id="DatabaseFunction.book_ticket">
+<a class="viewcode-back" href="../../db.html#db.DatabaseFunctions.DatabaseFunction.book_ticket">[docs]</a>
+    <span class="k">def</span> <span class="nf">book_ticket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cnic</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">travelId</span><span class="p">,</span> <span class="n">dateOfBirth</span><span class="p">,</span> <span class="n">numUnderTwo</span><span class="p">,</span> <span class="n">numYoung</span><span class="p">,</span> <span class="n">numAged</span><span class="p">,</span> <span class="n">seats</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function completes the booking procedure</span>
+<span class="sd">        The function takes some arguments and store them in database</span>
+<span class="sd">        The function also updates the status of the seats booked by the user</span>
+<span class="sd">        The function does not return anything</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cnic</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No CNIC Number Specified&quot;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No Name Specified&quot;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">travelId</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No Travel ID Specified&quot;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dateOfBirth</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No Date Of Birth Specified&quot;</span>
+        
+        <span class="n">num_of_seats</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seats</span><span class="p">)</span>
+
+        <span class="n">other_seats</span> <span class="o">=</span> <span class="n">num_of_seats</span> <span class="o">-</span> <span class="n">numUnderTwo</span> <span class="o">-</span> <span class="n">numYoung</span> <span class="o">-</span> <span class="n">numAged</span>
+
+        <span class="k">try</span><span class="p">:</span> <span class="c1">#cost function is not working properly!</span>
+            <span class="n">cost</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">other_seats</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fare</span> <span class="o">+</span> <span class="n">numUnderTwo</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fare</span> <span class="o">*</span> <span class="mf">0.7</span> <span class="o">+</span> <span class="n">numYoung</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fare</span> <span class="o">*</span> <span class="mf">0.8</span> <span class="o">+</span> <span class="n">numAged</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fare</span> <span class="o">*</span> <span class="mf">0.75</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">cost</span> <span class="o">=</span> <span class="mi">3000</span>
+
+        <span class="n">bookings_pointer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bookings</span><span class="o">.</span><span class="n">count_documents</span><span class="p">({})</span>
+
+        <span class="n">bookingId</span> <span class="o">=</span> <span class="mi">3896</span> <span class="o">+</span> <span class="n">bookings_pointer</span>
+
+        <span class="n">booking_document</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;bookingId&quot;</span><span class="p">:</span> <span class="n">bookingId</span><span class="p">,</span> 
+            <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)),</span>
+            <span class="s2">&quot;cnic&quot;</span><span class="p">:</span> <span class="n">cnic</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;dateOfBirth&quot;</span><span class="p">:</span> <span class="n">dateOfBirth</span><span class="p">,</span>
+            <span class="s2">&quot;travelId&quot;</span><span class="p">:</span> <span class="n">travelId</span><span class="p">,</span>
+            <span class="s2">&quot;numberOfSeats&quot;</span> <span class="p">:</span> <span class="n">num_of_seats</span><span class="p">,</span>
+            <span class="s2">&quot;numUnderTwo&quot;</span><span class="p">:</span> <span class="n">numUnderTwo</span><span class="p">,</span>
+            <span class="s2">&quot;numYoung&quot;</span><span class="p">:</span> <span class="n">numYoung</span><span class="p">,</span>
+            <span class="s2">&quot;numAged&quot;</span><span class="p">:</span> <span class="n">numAged</span><span class="p">,</span>
+            <span class="s2">&quot;cost&quot;</span><span class="p">:</span> <span class="n">cost</span>
+            <span class="p">}</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">seats</span><span class="p">:</span>
+            <span class="n">seat_document</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seats</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s2">&quot;seatNumber&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">})</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">seat_document</span><span class="p">[</span><span class="s2">&quot;bookingId&quot;</span><span class="p">]:</span>
+                    <span class="k">return</span> <span class="s2">&quot;The Seat &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; is already booked.&quot;</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">bookings</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span><span class="n">booking_document</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">seats</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">seats</span><span class="o">.</span><span class="n">update_one</span><span class="p">({</span><span class="s2">&quot;seatNumber&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;$set&quot;</span><span class="p">:{</span><span class="s2">&quot;bookingId&quot;</span><span class="p">:</span> <span class="n">bookingId</span><span class="p">}})</span></div>
+
+
+
+<div class="viewcode-block" id="DatabaseFunction.view_booking">
+<a class="viewcode-back" href="../../db.html#db.DatabaseFunctions.DatabaseFunction.view_booking">[docs]</a>
+    <span class="k">def</span> <span class="nf">view_booking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bookingId</span><span class="p">,</span> <span class="n">cnic</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The function is aimed for displaying the booking to the user</span>
+<span class="sd">        The function takes the bookingId and cnic and matches the documents in the database</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">bookingId</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No Booking ID Specified&quot;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cnic</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No CNIC Number Specified&quot;</span>
+
+        <span class="n">booking</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bookings</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s2">&quot;bookingId&quot;</span><span class="p">:</span> <span class="n">bookingId</span><span class="p">,</span> <span class="s2">&quot;cnic&quot;</span><span class="p">:</span> <span class="n">cnic</span><span class="p">})</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The booking ID is&quot;</span><span class="p">,</span> <span class="n">booking</span><span class="p">)</span>
+        <span class="n">seats</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">booking</span><span class="p">:</span>
+            <span class="n">all_seats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seats</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s2">&quot;bookingId&quot;</span><span class="p">:</span> <span class="n">bookingId</span><span class="p">})</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">all_seats</span><span class="p">:</span>
+                <span class="n">seats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;seatNumber&quot;</span><span class="p">])</span>  
+
+        <span class="n">train_reserved</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s2">&quot;travelId&quot;</span><span class="p">:</span> <span class="n">booking</span><span class="p">[</span><span class="s2">&quot;travelId&quot;</span><span class="p">]})</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The travel ID is&quot;</span><span class="p">,</span> <span class="n">train_reserved</span><span class="p">)</span>
+
+        <span class="n">view_document</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;bookingId&quot;</span><span class="p">:</span> <span class="n">bookingId</span><span class="p">,</span> 
+            <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)),</span>
+            <span class="s2">&quot;cnic&quot;</span><span class="p">:</span> <span class="n">cnic</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">booking</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;dateOfBirth&quot;</span><span class="p">:</span> <span class="n">booking</span><span class="p">[</span><span class="s2">&quot;dateOfBirth&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;travelId&quot;</span><span class="p">:</span> <span class="n">booking</span><span class="p">[</span><span class="s2">&quot;travelId&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;departure&quot;</span><span class="p">:</span> <span class="n">train_reserved</span><span class="p">[</span><span class="s2">&quot;departure&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;destination&quot;</span><span class="p">:</span> <span class="n">train_reserved</span><span class="p">[</span><span class="s2">&quot;destination&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;numberOfSeats&quot;</span> <span class="p">:</span> <span class="n">booking</span><span class="p">[</span><span class="s2">&quot;numberOfSeats&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;numUnderTwo&quot;</span><span class="p">:</span> <span class="n">booking</span><span class="p">[</span><span class="s2">&quot;numUnderTwo&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;numYoung&quot;</span><span class="p">:</span> <span class="n">booking</span><span class="p">[</span><span class="s2">&quot;numYoung&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;numAged&quot;</span><span class="p">:</span> <span class="n">booking</span><span class="p">[</span><span class="s2">&quot;numAged&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;cost&quot;</span><span class="p">:</span> <span class="n">booking</span><span class="p">[</span><span class="s2">&quot;cost&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;seats&quot;</span><span class="p">:</span> <span class="n">seats</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">view_document</span></div>
+
+
+<div class="viewcode-block" id="DatabaseFunction.cancel_booking">
+<a class="viewcode-back" href="../../db.html#db.DatabaseFunctions.DatabaseFunction.cancel_booking">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancel_booking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bookingId</span><span class="p">,</span> <span class="n">cnic</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function works to cancel booking</span>
+<span class="sd">        The function takes the bookingId and cnic and matches the documents in the database</span>
+<span class="sd">        &quot;&quot;&quot;</span>    
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">bookingId</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No Booking ID Specified&quot;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cnic</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No CNIC Number Specified&quot;</span>
+
+        <span class="n">booking</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bookings</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s2">&quot;bookingId&quot;</span><span class="p">:</span> <span class="n">bookingId</span><span class="p">,</span> <span class="s2">&quot;cnic&quot;</span><span class="p">:</span> <span class="n">cnic</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">booking</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No booking found with this cnic and bookingId&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">bookings</span><span class="o">.</span><span class="n">delete_one</span><span class="p">({</span><span class="s2">&quot;bookingId&quot;</span><span class="p">:</span> <span class="n">bookingId</span><span class="p">,</span> <span class="s2">&quot;cnic&quot;</span><span class="p">:</span> <span class="n">cnic</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seats</span><span class="o">.</span><span class="n">update_many</span><span class="p">({</span><span class="s2">&quot;bookingId&quot;</span><span class="p">:</span> <span class="n">bookingId</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;$set&quot;</span><span class="p">:{</span><span class="s2">&quot;bookingId&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}})</span>
+
+        <span class="k">return</span> <span class="s2">&quot;The Booking has been cancelled&quot;</span></div>
+</div>
+
+        
+
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">DatabaseFunction</span><span class="p">()</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">get_fare</span><span class="p">(</span><span class="s2">&quot;Karachi&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">get_seats_and_time</span><span class="p">(</span><span class="s2">&quot;Karachi&quot;</span><span class="p">,</span> <span class="s2">&quot;Lahore&quot;</span><span class="p">,</span> <span class="s2">&quot;2023-10-23&quot;</span><span class="p">,</span> <span class="s2">&quot;08:30:00&quot;</span><span class="p">,</span> <span class="s2">&quot;economy&quot;</span><span class="p">)</span>
+
+
+    <span class="c1"># To make sure that you have got the correct suggested times, run this code</span>
+    <span class="c1"># print(info[&quot;times&quot;]) # The times suggested, the keys show the time while the values are the travelIds</span>
+    <span class="c1"># get_docs = df.schedule.find({&quot;departure&quot;: &quot;Karachi&quot;, &quot;destination&quot;: &quot;Lahore&quot;, &quot;timestamp&quot;: { &quot;$regex&quot;: &quot;^2023-10-14&quot;, &quot;$options&quot;: &quot;i&quot;}})</span>
+    <span class="c1"># for i in get_docs:</span>
+    <span class="c1">#     print(i)</span>
+
+    <span class="c1"># Code for Booking</span>
+    <span class="c1"># doc = df.book_ticket(&quot;/////////&quot;, &quot;///////////&quot;, 1000, &quot;2002-09-17&quot;, 0, 0, 0, [1])</span>
+    <span class="c1"># print(doc)</span>
+
+    <span class="c1"># Code for viewing</span>
+    <span class="n">booking</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">view_booking</span><span class="p">(</span><span class="mi">3897</span><span class="p">,</span> <span class="s2">&quot;1111111111112&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">booking</span><span class="p">)</span>
+
+    <span class="c1"># Code for cancelling</span>
+    <span class="c1"># result = df.cancel_booking(3896, &quot;//////////&quot;)</span>
+    <span class="c1"># print(result)</span>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Muhammad Bilal | Muhammad Ashhub Ali | Abdul Arham.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils package &mdash; Train Reservation System 00.00.01 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d7bb8d4d"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="db package" href="db.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Train Reservation System
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="src.html">src package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="src.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="db.html">db package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">utils package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-utils.CustomerInformation">utils.CustomerInformation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-utils.GUI">utils.GUI module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-utils.ScheduleMaker">utils.ScheduleMaker module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-utils.Train">utils.Train module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-utils.TrainsMaker">utils.TrainsMaker module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.html#module-main">main module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Train Reservation System</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="src.html">src package</a></li>
+      <li class="breadcrumb-item active">utils package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="utils-package">
+<h1>utils package<a class="headerlink" href="#utils-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-utils.CustomerInformation">
+<span id="utils-customerinformation-module"></span><h2>utils.CustomerInformation module<a class="headerlink" href="#module-utils.CustomerInformation" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.CustomerInformation.CustomerInformation">
+<span class="sig-prename descclassname"><span class="pre">utils.CustomerInformation.</span></span><span class="sig-name descname"><span class="pre">CustomerInformation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/CustomerInformation.html#CustomerInformation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.CustomerInformation.CustomerInformation" title="Link to this definition"></a></dt>
+<dd><p>This function manages customer information for a train reservation system.</p>
+<p>It performs the following tasks:
+1. Retrieves the current working directory.
+2. Defines the data directory path (assuming it’s at the same level as ‘src’).
+3. Ensures that the ‘data’ directory exists and creates it if it doesn’t.
+4. Defines file paths for ‘TrainReservation.txt’ and ‘TrainReservation.csv’.
+5. Writes a header to the ‘TrainReservation.txt’ file if it doesn’t already exist.
+6. Reads the ‘TrainReservation.txt’ file and saves its content as ‘TrainReservation.csv’.</p>
+<p>The function is designed to initialize and manage data files for train reservation information.</p>
+<p>Parameters:
+None</p>
+<p>Returns:
+None</p>
+<p>Example Usage:
+CustomerInformation()  # Calls the function to manage customer information.</p>
+</dd></dl>
+
+</section>
+<section id="module-utils.GUI">
+<span id="utils-gui-module"></span><h2>utils.GUI module<a class="headerlink" href="#module-utils.GUI" title="Link to this heading"></a></h2>
+<p>Created on Fri Feb  4 14:18:25 2022</p>
+<p>&#64;author: M. Ashhub Ali</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="utils.GUI.MainWindow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">utils.GUI.</span></span><span class="sig-name descname"><span class="pre">MainWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/GUI.html#MainWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.GUI.MainWindow" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QMainWindow</span></code></p>
+<p>The MainWindow class represents the main window of the Train Reservation System application.</p>
+<p>Attributes:
+- directory (str): The current working directory.</p>
+<p>Methods:
+- CorrectName(name, button): Validates and corrects the name input field.
+- CorrectCNIC(cnic, button): Validates and corrects the CNIC input field.
+- ReturnToMenu(frame, name, cnic): Hides a given frame and resets input fields, enabling navigation to the main menu.
+- _updateDestination(depart, dest): Updates the destination based on the selected departure city.
+- _update2to18(val1, box1, button): Updates available seats for passengers between 2 and 18 years old.
+- _updateAbove60(val2, box2): Updates available seats for passengers above 60 years old.
+- SeatSelection(t_type, day, time, dept, dest): Selects available seats based on train type, day, time, departure, and destination.
+- MaxSeats(train, typ, berth=””): Calculates the maximum available seats based on the train type and berth.
+- updateTime(day, dept, dest, hr, combobox): Updates the available time slots based on the selected day, departure, and destination.
+- fareCost(details): Calculates fare cost and discounts based on passenger details and train type.
+- FinalSelection(details, box, rateframes): Finalizes the ticket booking with fare details and seat allocation.
+- BookTicket(inputbox, moredetails, frame, signal): Handles the booking process, input validation, and seat selection.
+- SetDefault(L): Resets input fields and enables passenger details input for a new booking.
+- UpdateReservation(): Handles updating an existing reservation.
+- ReadFile(name, cnic): Reads passenger information from the CSV file.
+- ViewReservation(name, cnic, outputs, frame): Views passenger reservation details.
+- RemoveBooking(details): Removes a passenger’s booking, releasing the booked seats.
+- CancelBooking(): Handles the cancellation of a booking and refunds.</p>
+<p>Example Usage:
+- Create an instance of the MainWindow class to run the Train Reservation System application.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.GUI.MainWindow.BookTicket">
+<span class="sig-name descname"><span class="pre">BookTicket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputbox</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moredetails</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/GUI.html#MainWindow.BookTicket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.GUI.MainWindow.BookTicket" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.GUI.MainWindow.CancelBooking">
+<span class="sig-name descname"><span class="pre">CancelBooking</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/GUI.html#MainWindow.CancelBooking"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.GUI.MainWindow.CancelBooking" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.GUI.MainWindow.CorrectBooking">
+<span class="sig-name descname"><span class="pre">CorrectBooking</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">booking</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">button</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/GUI.html#MainWindow.CorrectBooking"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.GUI.MainWindow.CorrectBooking" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.GUI.MainWindow.CorrectCNIC">
+<span class="sig-name descname"><span class="pre">CorrectCNIC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cnic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">button</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/GUI.html#MainWindow.CorrectCNIC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.GUI.MainWindow.CorrectCNIC" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.GUI.MainWindow.CorrectName">
+<span class="sig-name descname"><span class="pre">CorrectName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">button</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/GUI.html#MainWindow.CorrectName"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.GUI.MainWindow.CorrectName" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.GUI.MainWindow.FinalSelection">
+<span class="sig-name descname"><span class="pre">FinalSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">details</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rateframes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/GUI.html#MainWindow.FinalSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.GUI.MainWindow.FinalSelection" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.GUI.MainWindow.MaxSeats">
+<span class="sig-name descname"><span class="pre">MaxSeats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">berth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/GUI.html#MainWindow.MaxSeats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.GUI.MainWindow.MaxSeats" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.GUI.MainWindow.ReadFile">
+<span class="sig-name descname"><span class="pre">ReadFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cnic</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/GUI.html#MainWindow.ReadFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.GUI.MainWindow.ReadFile" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.GUI.MainWindow.RemoveBooking">
+<span class="sig-name descname"><span class="pre">RemoveBooking</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">details</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/GUI.html#MainWindow.RemoveBooking"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.GUI.MainWindow.RemoveBooking" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.GUI.MainWindow.ReturnToMenu">
+<span class="sig-name descname"><span class="pre">ReturnToMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cnic</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/GUI.html#MainWindow.ReturnToMenu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.GUI.MainWindow.ReturnToMenu" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.GUI.MainWindow.SeatSelection">
+<span class="sig-name descname"><span class="pre">SeatSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dept</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/GUI.html#MainWindow.SeatSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.GUI.MainWindow.SeatSelection" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.GUI.MainWindow.SetDefault">
+<span class="sig-name descname"><span class="pre">SetDefault</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/GUI.html#MainWindow.SetDefault"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.GUI.MainWindow.SetDefault" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.GUI.MainWindow.UpdateReservation">
+<span class="sig-name descname"><span class="pre">UpdateReservation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/GUI.html#MainWindow.UpdateReservation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.GUI.MainWindow.UpdateReservation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.GUI.MainWindow.ViewReservation">
+<span class="sig-name descname"><span class="pre">ViewReservation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cnic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">messageFrame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/GUI.html#MainWindow.ViewReservation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.GUI.MainWindow.ViewReservation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.GUI.MainWindow.fareCost">
+<span class="sig-name descname"><span class="pre">fareCost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">details</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/GUI.html#MainWindow.fareCost"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.GUI.MainWindow.fareCost" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.GUI.MainWindow.updateTime">
+<span class="sig-name descname"><span class="pre">updateTime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dept</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combobox</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/GUI.html#MainWindow.updateTime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.GUI.MainWindow.updateTime" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-utils.ScheduleMaker">
+<span id="utils-schedulemaker-module"></span><h2>utils.ScheduleMaker module<a class="headerlink" href="#module-utils.ScheduleMaker" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="utils.ScheduleMaker.ScheduleMaker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">utils.ScheduleMaker.</span></span><span class="sig-name descname"><span class="pre">ScheduleMaker</span></span><a class="reference internal" href="_modules/utils/ScheduleMaker.html#ScheduleMaker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.ScheduleMaker.ScheduleMaker" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The ScheduleMaker class is designed to generate, read, and save schedules for train departures and arrivals.</p>
+<p>It includes methods for generating a schedule, reading an existing schedule from a file, and saving the
+schedule to a file.</p>
+<p>Attributes:
+- schedule (list): A list to store the schedule information as strings.
+- depts (list): A list of departure locations.
+- arrival (list): A list of arrival locations.
+- days (list): A list of days of the week.
+- times (list): A list of departure and arrival times.
+- t_num (int): An internal variable to keep track of the time index during schedule generation.</p>
+<p>Methods:
+- generate_schedule(): Generates a schedule and writes it to a ‘schedule.txt’ file.
+- read_schedule(): Reads a schedule from the ‘schedule.txt’ file and stores it in the ‘schedule’ attribute.
+- save_schedule(): Saves the schedule stored in the ‘schedule’ attribute to the ‘schedule.txt’ file.</p>
+<p>Example Usage:
+schedule_maker = ScheduleMaker()  # Create an instance of the ScheduleMaker class.
+schedule_maker.generate_schedule()  # Generate and save a schedule.
+schedule_maker.read_schedule()  # Read the saved schedule from the file.
+schedule_maker.save_schedule()  # Save any modifications to the schedule back to the file.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.ScheduleMaker.ScheduleMaker.generate_schedule">
+<span class="sig-name descname"><span class="pre">generate_schedule</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/ScheduleMaker.html#ScheduleMaker.generate_schedule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.ScheduleMaker.ScheduleMaker.generate_schedule" title="Link to this definition"></a></dt>
+<dd><p>Generates a train schedule and writes it to a ‘schedule.txt’ file.</p>
+<p>The generated schedule includes information about departures and arrivals between different locations,
+including days of the week and corresponding departure and arrival times.</p>
+<p>Parameters:
+None</p>
+<p>Returns:
+None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.ScheduleMaker.ScheduleMaker.read_schedule">
+<span class="sig-name descname"><span class="pre">read_schedule</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/ScheduleMaker.html#ScheduleMaker.read_schedule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.ScheduleMaker.ScheduleMaker.read_schedule" title="Link to this definition"></a></dt>
+<dd><p>Reads a train schedule from the ‘schedule.txt’ file and stores it in the ‘schedule’ attribute.</p>
+<p>Parameters:
+None</p>
+<p>Returns:
+None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.ScheduleMaker.ScheduleMaker.save_schedule">
+<span class="sig-name descname"><span class="pre">save_schedule</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/ScheduleMaker.html#ScheduleMaker.save_schedule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.ScheduleMaker.ScheduleMaker.save_schedule" title="Link to this definition"></a></dt>
+<dd><p>Saves the schedule stored in the ‘schedule’ attribute to the ‘schedule.txt’ file.</p>
+<p>Parameters:
+None</p>
+<p>Returns:
+None</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-utils.Train">
+<span id="utils-train-module"></span><h2>utils.Train module<a class="headerlink" href="#module-utils.Train" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="utils.Train.Train">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">utils.Train.</span></span><span class="sig-name descname"><span class="pre">Train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">departure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrival</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seats</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/Train.html#Train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.Train.Train" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The Train class represents a train with specific attributes such as train ID, type, day, time, departure,
+arrival, and available seats.</p>
+<p>Attributes:
+- train_id (str): The unique identifier for the train.
+- train_type (str): The type or category of the train.
+- day (str): The day of the week when the train operates.
+- time (str): The departure time of the train.
+- departure (str): The departure station or location.
+- arrival (str): The arrival station or location.
+- seats (dict): A dictionary representing the available seats on the train.</p>
+<p>Methods:
+- to_json(): Converts the Train object to a JSON-compatible dictionary for serialization.</p>
+<p>Example Usage:
+train = Train(“T123”, “Express”, “MON”, “08:00 AM”, “Karachi”, “Lahore”, {“Economy”: 50, “Business”: 20})
+train_data = train.to_json()  # Convert the Train object to a JSON-compatible dictionary.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.Train.Train.to_json">
+<span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/Train.html#Train.to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.Train.Train.to_json" title="Link to this definition"></a></dt>
+<dd><p>Converts the Train object to a JSON-compatible dictionary for serialization.</p>
+<p>Returns:
+dict: A dictionary representation of the Train object.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-utils.TrainsMaker">
+<span id="utils-trainsmaker-module"></span><h2>utils.TrainsMaker module<a class="headerlink" href="#module-utils.TrainsMaker" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="utils.TrainsMaker.TrainsMaker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">utils.TrainsMaker.</span></span><span class="sig-name descname"><span class="pre">TrainsMaker</span></span><a class="reference internal" href="_modules/utils/TrainsMaker.html#TrainsMaker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.TrainsMaker.TrainsMaker" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The TrainsMaker class generates and manages train objects, allowing the creation of train schedules.</p>
+<p>Attributes:
+- depts (list): A list of departure locations.
+- arrival (list): A list of arrival locations.
+- days (list): A list of days of the week.
+- types (list): A list of train types or categories.
+- id (int): An identifier for train objects.
+- times (list): A list of departure times.
+- t_num (int): An internal variable to keep track of time index during train generation.</p>
+<p>Methods:
+- generate_train_objects(): Generates a list of train objects based on provided attributes.
+- get_seats(train_type): Returns a dictionary representing available seats based on the train type.
+- save_trains_to_file(train_objects): Saves train objects to a ‘Trains.txt’ file in JSON format.</p>
+<p>Example Usage:
+trains_maker = TrainsMaker()  # Create an instance of the TrainsMaker class.
+train_objects = trains_maker.generate_train_objects()  # Generate train objects.
+trains_maker.save_trains_to_file(train_objects)  # Save train objects to a file.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.TrainsMaker.TrainsMaker.generate_train_objects">
+<span class="sig-name descname"><span class="pre">generate_train_objects</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/TrainsMaker.html#TrainsMaker.generate_train_objects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.TrainsMaker.TrainsMaker.generate_train_objects" title="Link to this definition"></a></dt>
+<dd><p>Generates a list of train objects based on predefined attributes.</p>
+<p>Returns:
+list: A list of Train objects representing generated trains.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.TrainsMaker.TrainsMaker.get_seats">
+<span class="sig-name descname"><span class="pre">get_seats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/TrainsMaker.html#TrainsMaker.get_seats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.TrainsMaker.TrainsMaker.get_seats" title="Link to this definition"></a></dt>
+<dd><p>Returns a dictionary representing available seats based on the train type.</p>
+<p>Parameters:
+- train_type (str): The type or category of the train (“economy” or “business”).</p>
+<p>Returns:
+dict: A dictionary representing available seats.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.TrainsMaker.TrainsMaker.save_trains_to_file">
+<span class="sig-name descname"><span class="pre">save_trains_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_objects</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/TrainsMaker.html#TrainsMaker.save_trains_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.TrainsMaker.TrainsMaker.save_trains_to_file" title="Link to this definition"></a></dt>
+<dd><p>Saves train objects to a ‘Trains.txt’ file in JSON format.</p>
+<p>Parameters:
+- train_objects (list): A list of Train objects to be saved.</p>
+<p>Returns:
+None</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="db.html" class="btn btn-neutral float-left" title="db package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Muhammad Bilal | Muhammad Ashhub Ali | Abdul Arham.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
