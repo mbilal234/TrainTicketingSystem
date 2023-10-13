@@ -1,7 +1,7 @@
 from datetime import datetime
 from db import DatabaseConnection
-class DatabaseFunction:
 
+class DatabaseFunction:
     """
     This class contains all the database functionality
     The main aim of the class is to provide function for data storage and retrieval
@@ -22,7 +22,6 @@ class DatabaseFunction:
         self.fare = None
 
     def get_fare(self, departure, destination):
-
         """
         The function gets the fare from the database based on the departure and arrival cities selected
         """
@@ -38,7 +37,6 @@ class DatabaseFunction:
         return self.fare
 
     def get_seats_and_time(self, departure, destination, date, time, travelling_class):
-
         """
         The function has the aim to suggest the user with the nearest timing to the selected one
         The function returns the remaining seats in train if case the user is travelling in economy class
@@ -125,7 +123,6 @@ class DatabaseFunction:
     
 
     def get_business_seats(self, travelId, berth):
-
         """
         The function aims to fetch business class seats
         The seats from the berth given in argument is fetched
@@ -174,7 +171,6 @@ class DatabaseFunction:
         return {"seats": all_seats}
     
     def book_ticket(self, cnic, name, travelId, dateOfBirth, numUnderTwo, numYoung, numAged, seats):
-
         """
         This function completes the booking procedure
         The function takes some arguments and store them in database

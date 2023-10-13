@@ -1,5 +1,5 @@
 # Import necessary modules and classes
-from adjuncts import CustomerInformation, GUI, ScheduleMaker, Train, TrainsMaker
+from utils import CustomerInformation, GUI, ScheduleMaker, Train, TrainsMaker
 from PyQt5 import QtGui, QtWidgets, uic
 from PyQt5.QtCore import *
 import sys
