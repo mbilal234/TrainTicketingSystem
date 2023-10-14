@@ -1,5 +1,6 @@
 from datetime import datetime
 from db import DatabaseConnection
+# import DatabaseConnection
 class DatabaseFunction:
 
     """
@@ -21,7 +22,7 @@ class DatabaseFunction:
         self.seats = db["seats"]
         self.fare = None
 
-    def get_fare(self, departure, destination):
+    def get_fare(self, departure, destination, class_type):
 
         """
         The function gets the fare from the database based on the departure and arrival cities selected
@@ -32,8 +33,11 @@ class DatabaseFunction:
         
         if not destination:
             return "No Destination City Specified"
+        
+        if not class_type:
+            return "No Class Type Specified"
 
-        fare_query = {"$or": [{"firstCity": departure, "secondCity": destination }, {"firstCity": destination, "secondCity": departure}]}
+        fare_query = {"$and": [{"$or": [{"firstCity": departure, "secondCity": destination }, {"firstCity": destination, "secondCity": departure}]}, {"class": class_type}]}
         self.fare = int(self.fares.find(fare_query)[0]["price"])
         return self.fare
 
@@ -67,7 +71,7 @@ class DatabaseFunction:
         query = { "departure": departure, "destination": destination, "timestamp": { "$regex": pattern, "$options": "i"}}
         #CURRENT ISSUE IS THAT DATE ON GUI IS UPTILL 2022, while in DATABASE IT IS AFTER 2023
         documents = list(self.schedule.find(query))
-        print("The documents are ", type(documents), len(documents))
+        # print("The documents are ", type(documents), len(documents))
 
         if len(documents) == 0:
             print("No Trains Found")
@@ -121,7 +125,7 @@ class DatabaseFunction:
         for i in seats:
             all_seats.append(i["seats"])
 
-        return {"times": {str(suggested_time): travel_id_1, str(second_option_time): travel_id_2}, "seats": all_seats}
+        return {"suggested": str(suggested_time),"times": {str(suggested_time): travel_id_1, str(second_option_time): travel_id_2}, "seats": all_seats}
     
 
     def get_business_seats(self, travelId, berth):
@@ -162,6 +166,49 @@ class DatabaseFunction:
                 "$match": {
                     "seats.class": "business",
                     "seats.seatNumber": { "$regex": pattern, "$options": "i"},
+                    "seats.bookingId": None
+                }
+            }
+        ]))
+
+        all_seats = []
+        for i in seats:
+            all_seats.append(i["seats"])
+
+        return {"seats": all_seats}
+    
+    def get_economy_seats(self, travelId):
+
+        """
+        The function aims to fetch business class seats
+        The seats from the berth given in argument is fetched
+        The function takes travelId and berth in arguments which are used in query
+        This function returns a list of seats to suggest the user
+        """
+
+        if not travelId:
+            return "No Travel ID Specified"
+
+        seats = list(self.schedule.aggregate([
+            {
+                "$match": {
+                    "travelId": travelId
+                }
+            },
+            {
+                "$lookup": {
+                    "from": "seats",
+                    "localField": "travelId",
+                    "foreignField": "travelId",
+                    "as": "seats"
+                }
+            },
+            {
+                "$unwind": "$seats"
+            },
+            {
+                "$match": {
+                    "seats.class": "economy",
                     "seats.bookingId": None
                 }
             }
@@ -229,10 +276,12 @@ class DatabaseFunction:
             except:
                 pass
         
-        self.bookings.insert_one(booking_document)
+        result = self.bookings.insert_one(booking_document)
 
         for i in seats:
             self.seats.update_one({"seatNumber": i}, {"$set":{"bookingId": bookingId}})
+
+        return result.bookingId
 
 
     def view_booking(self, bookingId, cnic):
@@ -250,9 +299,12 @@ class DatabaseFunction:
         booking = self.bookings.find_one({"bookingId": bookingId, "cnic": cnic})
         print("The booking ID is", booking)
         seats = []
+        seat_type = ""
         if booking:
             all_seats = self.seats.find({"bookingId": bookingId})
             for i in all_seats:
+                if seat_type == "":
+                    seat_type = i["class"]
                 seats.append(i["seatNumber"])  
 
         train_reserved = self.schedule.find_one({"travelId": booking["travelId"]})
@@ -267,11 +319,14 @@ class DatabaseFunction:
             "travelId": booking["travelId"],
             "departure": train_reserved["departure"],
             "destination": train_reserved["destination"],
+            "date": train_reserved["timestamp"].split(" ")[0],
+            "time": train_reserved["timestamp"].split(" ")[1][:-3],
             "numberOfSeats" : booking["numberOfSeats"],
             "numUnderTwo": booking["numUnderTwo"],
             "numYoung": booking["numYoung"],
             "numAged": booking["numAged"],
             "cost": booking["cost"],
+            "class": seat_type,
             "seats": seats,
         }
 
@@ -301,9 +356,10 @@ class DatabaseFunction:
 
 if __name__=="__main__":
     df = DatabaseFunction()
-    df.get_fare("Karachi", "")
-    info = df.get_seats_and_time("Karachi", "Lahore", "2023-10-23", "08:30:00", "economy")
-
+    info = df.get_fare("Karachi", "Lahore", "economy")
+    # info = df.get_seats_and_time("Karachi", "Lahore", "2023-10-23", "08:30:00", "economy")
+    # print("Final info is:\n")
+    print(info)
 
     # To make sure that you have got the correct suggested times, run this code
     # print(info["times"]) # The times suggested, the keys show the time while the values are the travelIds
@@ -316,8 +372,8 @@ if __name__=="__main__":
     # print(doc)
 
     # Code for viewing
-    booking = df.view_booking(3897, "1111111111112")
-    print(booking)
+    # booking = df.view_booking(3897, "1111111111112")
+    # print(booking)
 
     # Code for cancelling
     # result = df.cancel_booking(3896, "//////////")
