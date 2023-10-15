@@ -210,7 +210,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if  details["Time"] in i:
                 travelID = travelIDs['times'][i]
         
-        id = self.db.book_ticket(details["BookingID"], details["Name"], travelID, str(details["DOB"]), 0, details["Kids"], details["Elderly"], details["SeatNumber"].split(','))
+        id = self.db.book_ticket(details["CNIC"], details["Name"], travelID, str(details["DOB"]), 0, details["Kids"], details["Elderly"], details["Seats"])
         
         rateframes[0].hide()
         rateframes[1].show()
@@ -221,37 +221,6 @@ class MainWindow(QtWidgets.QMainWindow):
         rateframes[6].setText(str(id))
 
         self.ViewReservationButton.clicked.connect(lambda: self.ViewReservation(id, self.cnicInput.text(), out, self.ViewTicketFrame, self.MessageFrameView))
-        # s = ""
-        # for i in train101.keys():
-        #     if a == 0:
-        #         break
-        #     elif i.startswith(L) and train101[i]==True:
-        #         train101[i]=False
-        #         s += i + ","
-        #         a-=1
-        # seats = s[:-1]
-        # details["SeatNumber"] = seats
-        
-        # try:
-        #     with open('Trains.txt','a') as file:
-        #         for i in train100:
-        #             if '"Type": "'+details["Type"].lower()+'", "day": "'+details["Day"]+'", "time": '+'"'+(details["Time"])[:2]+(details["Time"])[3:] +'", '+ '"'+details["Departure"].lower()+'": "'+details["Destination"].lower()+'"' in i:
-        #                 train100.remove(i)
-
-        #     with open('Trains.txt','w') as file:
-        #         for i in train100:
-        #             i=json.loads(i)
-        #             file.write(json.dumps(i))
-        #             file.write("\n")
-        #         file.write(json.dumps(train101))
-        # except:
-        #     pass
-        
-        # with open('TrainReservation.csv', mode='a') as file:
-        #     keys = ["BookingID", "Name", "DOB", "Departure", "Destination", "Date", "Day", 
-        #             "Time", "Type", "Seats", "Berth", "FareCost", "Elderly", "Kids", "SeatNumber"]
-        #     w = csv.DictWriter(file, fieldnames=keys)
-        #     w.writerow(details)
         return None
         
     def BookTicket(self, inputbox, moredetails, frame, signal):
@@ -271,7 +240,7 @@ class MainWindow(QtWidgets.QMainWindow):
         t = preferredtime.strftime('%H:%M')
         
         if t_type == "Business":
-            # time_and_seats = SOME IMPLEMENTATION FOR GETTING SEATS AND TIME FOR BUSINESS CLASS BERTH A
+            time_and_seats = self.db.get_seats_and_time(dept, dest, date, t, "business")
             pass
         elif t_type == "Economy":
             time_and_seats = self.db.get_seats_and_time(dept, dest, date, t, "economy")
@@ -289,17 +258,18 @@ class MainWindow(QtWidgets.QMainWindow):
         for i in moredetails:    
             if type(i) is not list:
                 i.setEnabled(True)
+            moredetails[-2].setEnabled(False)
         if t_type == "Economy":
             moredetails[-1].setEnabled(False)
 
         print("Book Ticket:", t_type)
             
         self.SeatSelection(t_type, time_and_seats['times'][time_and_seats['suggested']])
-        moredetails[0].currentTextChanged.connect(lambda: self.SeatSelection(t_type, time_and_seats['times'][time_and_seats['suggested'].split(' ')[0] + ' ' + moredetails[0].currentText() + ':00']))
+        moredetails[0].currentTextChanged.connect(lambda: self.SeatSelection(t_type, time_and_seats['times'][time_and_seats['suggested'].split(' ')[0] + ' ' + (moredetails[0].currentText() + ':00' if moredetails[0].currentText() else time_and_seats['suggested'].split(' ')[1])]))
         moredetails[-1].currentTextChanged.connect(lambda: self.MaxSeats(time_and_seats['times'][time_and_seats['suggested']], t_type, moredetails[-1].currentText()))
         
-        reservation = {"BookingID": cnic, "Name": name, "DOB": dob, "Departure": dept, "Destination": dest, "Date": date, "Day": day, 
-                       "Time": '', "Type": t_type, "Seats": '0', "Berth": '0', "FareCost": '0', "Elderly": '', "Kids": '', "SeatNumber": ''}
+        reservation = {"CNIC": cnic, "Name": name, "DOB": dob, "Departure": dept, "Destination": dest, "Date": date, "Day": day, 
+                       "Time": '', "Type": t_type, "Seats": '0', "Berth": '0', "FareCost": '0', "Elderly": '', "Kids": ''}
         if signal == 1:
             # moredetails[-2].clicked.connect(lambda: self.RemoveBooking(moredetails[-3]))
             pass
@@ -342,37 +312,6 @@ class MainWindow(QtWidgets.QMainWindow):
     
     def RemoveBooking(self,  details):
         self.db.cancel_booking(details['bookingId'], details['cnic'])
-    #     L = []
-    #     with open("Trains.txt") as op:
-    #         for i in op:
-    #             L.append(i)
-    #     for i,k in enumerate(L):
-    #         if '"Type": "'+details[8].lower()+'", "day": "'+details[6]+'", "time": '+'"'+(details[7])[:2]+(details[7])[3:] +'", '+ '"'+details[3].lower()+'": "'+details[4].lower()+'"' in k:
-    #             d = json.loads(k)
-    #             for key in d:
-    #                 if key in details[-1] and d[key] == False:
-    #                     d[key] = True
-    #             e = json.dumps(d)
-    #             L[i] = e
-    #         else:
-    #             L[i] = k
-    #     with open("Trains.txt", "w") as op:
-    #         for i in L:
-    #             op.write(i)
-                
-    #     with open('TrainReservation.csv','r') as file:
-    #         customer_info = DictReader(file)
-    #         lis=[{'BookingID': '', ' Name': '', 'DOB': '', ' Departure': '', ' Destination': '', ' Date': '', ' Day': '', ' Time': '', ' Type': '', ' Seats': '', ' Berth': '', ' FareCost': '', ' Elderly': '', ' Kids': '', ' SeatNumber': ''}]
-    #         for i in customer_info:
-    #             lis.append(i)
-    #             for j in lis:
-    #                 if details[0] in j.values() and details[1] in j.values():
-    #                     lis.remove(j)
-    #     keys=lis[0].keys()
-    #     with open('TrainReservation.csv','w') as file:
-    #         dict_writer=csv.DictWriter(file,keys)
-    #         dict_writer.writeheader()
-    #         dict_writer.writerows(lis)
     
     def CancelBooking(self):
         bookingId = self.BookingInputCancel.text()
@@ -384,14 +323,5 @@ class MainWindow(QtWidgets.QMainWindow):
         
         if details and len(details) > 0:
             self.ViewReservation(bookingId, cnic, outCancel, self.CancelTicketFrame, self.MessageFrameCancel)
-            self.message.setText("Your Booking has been successfully cancelled! A refund of 50% has been transferred to your account.")
+            # self.message.setText("Your Booking has been successfully cancelled! A refund of 50% has been transferred to your account.")
             self.RemoveBooking(details)
-        
-# schedule_maker()
-# trains_maker()
-# try:
-#     f = open("TrainReservation.txt", "x")
-# except:
-#     pass
-# else:
-#     CustomerInformation.CustomerInformation()

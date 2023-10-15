@@ -34,37 +34,6 @@ def main():
     db = my_client["train_reservation_system"]
     # Create an instance of ScheduleMaker
     print(db)
-    # schedule_maker = ScheduleMaker.ScheduleMaker()
-
-    # Generate a schedule
-    # schedule_maker.generate_schedule()
-
-    # Read the schedule from file
-    # schedule_maker.read_schedule()
-
-    # Modify the schedule list if needed
-    # (Add any necessary schedule modifications here)
-
-    # Save the modified schedule to a file
-    # schedule_maker.save_schedule()
-
-    # Create an instance of TrainsMaker
-    # trains_maker = TrainsMaker.TrainsMaker()
-
-    # Generate train objects
-    # trains = trains_maker.generate_train_objects()
-
-    # Save the train objects to a file
-    # trains_maker.save_trains_to_file(trains)
-
-    # Try to create a file for customer information (if it doesn't already exist)
-    # try:
-    #     f = open("TrainReservation.txt", "x")
-    # except FileExistsError:
-    #     pass
-    # else:
-        # If the file is created, initialize the CustomerInformation class
-        # CustomerInformation.CustomerInformation()
 
     # Create a QApplication
     app = QtWidgets.QApplication(sys.argv)

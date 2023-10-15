@@ -275,13 +275,12 @@ class DatabaseFunction:
                     return "The Seat "+str(i)+" is already booked."
             except:
                 pass
-        
-        result = self.bookings.insert_one(booking_document)
 
+        result = self.bookings.insert_one(booking_document)
         for i in seats:
             self.seats.update_one({"seatNumber": i}, {"$set":{"bookingId": bookingId}})
 
-        return result.bookingId
+        return bookingId
 
 
     def view_booking(self, bookingId, cnic):
