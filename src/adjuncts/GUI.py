@@ -200,7 +200,7 @@ class MainWindow(QtWidgets.QMainWindow):
         price = self.fareCost(details)
         details["FareCost"] = price[3] 
         
-        travelIDs = self.db.get_seats_and_time(details["Departure"], details["Destination"], details["Date"], details["Time"], details["Type"])
+        travelIDs = self.db.get_seats_and_time(details["Departure"], details["Destination"], details["Date"], details["Time"], details["Type"].lower())
         print(travelIDs)
         times = travelIDs['times']
         print(times)
@@ -210,7 +210,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if  details["Time"] in i:
                 travelID = travelIDs['times'][i]
         
-        id = self.db.book_ticket(details["CNIC"], details["Name"], travelID, str(details["DOB"]), 0, details["Kids"], details["Elderly"], details["Seats"])
+        id = self.db.book_ticket(details["CNIC"], details["Name"], travelID, details["Type"].lower(), details["Berth"], str(details["DOB"]), 0, details["Kids"], details["Elderly"], int(details["Seats"]))
         
         rateframes[0].hide()
         rateframes[1].show()
@@ -241,7 +241,6 @@ class MainWindow(QtWidgets.QMainWindow):
         
         if t_type == "Business":
             time_and_seats = self.db.get_seats_and_time(dept, dest, date, t, "business")
-            pass
         elif t_type == "Economy":
             time_and_seats = self.db.get_seats_and_time(dept, dest, date, t, "economy")
 
@@ -270,9 +269,7 @@ class MainWindow(QtWidgets.QMainWindow):
         
         reservation = {"CNIC": cnic, "Name": name, "DOB": dob, "Departure": dept, "Destination": dest, "Date": date, "Day": day, 
                        "Time": '', "Type": t_type, "Seats": '0', "Berth": '0', "FareCost": '0', "Elderly": '', "Kids": ''}
-        if signal == 1:
-            # moredetails[-2].clicked.connect(lambda: self.RemoveBooking(moredetails[-3]))
-            pass
+
         moredetails[-2].clicked.connect(lambda: self.FinalSelection(reservation, moredetails, frame))
         
     def SetDefault(self, L):
@@ -300,7 +297,7 @@ class MainWindow(QtWidgets.QMainWindow):
             messageFrame.show()
         else:
             frame.show()
-            outputs[0].setText(details['cnic'])
+            outputs[0].setText(cnic)
             outputs[1].setText(details['name'])
             outputs[2].setText(details['departure'])
             outputs[3].setText(details['destination'])
