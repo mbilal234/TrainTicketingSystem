@@ -220,7 +220,7 @@ class DatabaseFunction:
 
         return {"seats": all_seats}
     
-    def book_ticket(self, cnic, name, travelId, dateOfBirth, numUnderTwo, numYoung, numAged, seats):
+    def book_ticket(self, cnic, name, travelId, travelling_class, berth, dateOfBirth, numUnderTwo, numYoung, numAged, num_of_seats):
 
         """
         This function completes the booking procedure
@@ -240,8 +240,6 @@ class DatabaseFunction:
         
         if not dateOfBirth:
             return "No Date Of Birth Specified"
-        
-        num_of_seats = len(seats)
 
         other_seats = num_of_seats - numUnderTwo - numYoung - numAged
 
@@ -249,6 +247,18 @@ class DatabaseFunction:
             cost = int(other_seats * self.fare + numUnderTwo * self.fare * 0.7 + numYoung * self.fare * 0.8 + numAged * self.fare * 0.75)
         except:
             cost = 3000
+
+        if travelling_class=="economy":
+            seats = list(self.seats.find({"class": travelling_class, "travelId": travelId, "bookingId": None}))
+        else:
+            pattern = f"^{berth}"
+            seats = list(self.seats.find({"class": travelling_class, "travelId": travelId, "bookingId": None, "seatNumber": { "$regex": pattern, "$options": "i"},}))
+
+        n = len(seats)
+        print(n)
+
+        if n < num_of_seats:
+            return "Not Enough Seats Available"
 
         bookings_pointer = self.bookings.count_documents({})
 
@@ -268,18 +278,11 @@ class DatabaseFunction:
             "cost": cost
             }
         
-        for i in seats:
-            seat_document = self.seats.find_one({"seatNumber": i})
-            try:
-                if seat_document["bookingId"]:
-                    return "The Seat "+str(i)+" is already booked."
-            except:
-                pass
+        for i in range(num_of_seats):
+            self.seats.update_one({"seatNumber":seats[i]["seatNumber"]}, {"$set": {"bookingId": bookingId}})
 
-        result = self.bookings.insert_one(booking_document)
-        for i in seats:
-            self.seats.update_one({"seatNumber": i}, {"$set":{"bookingId": bookingId}})
-
+        self.bookings.insert_one(booking_document)
+        
         return bookingId
 
 
@@ -358,7 +361,7 @@ if __name__=="__main__":
     info = df.get_fare("Karachi", "Lahore", "economy")
     # info = df.get_seats_and_time("Karachi", "Lahore", "2023-10-23", "08:30:00", "economy")
     # print("Final info is:\n")
-    print(info)
+    # print(info)
 
     # To make sure that you have got the correct suggested times, run this code
     # print(info["times"]) # The times suggested, the keys show the time while the values are the travelIds
@@ -367,8 +370,8 @@ if __name__=="__main__":
     #     print(i)
 
     # Code for Booking
-    # doc = df.book_ticket("/////////", "///////////", 1000, "2002-09-17", 0, 0, 0, [1])
-    # print(doc)
+    doc = df.book_ticket("////////////////", "Abdul Arham", 1000,  "business", "A", "2002-09-17", 0, 0, 0, 1)
+    print(doc)
 
     # Code for viewing
     # booking = df.view_booking(3897, "1111111111112")
