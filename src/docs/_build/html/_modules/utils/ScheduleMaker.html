@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils.ScheduleMaker &mdash; Train Reservation System 00.00.01 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=d7bb8d4d"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Train Reservation System
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../src.html">src package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Train Reservation System</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">utils.ScheduleMaker</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for utils.ScheduleMaker</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<div class="viewcode-block" id="ScheduleMaker">
+<a class="viewcode-back" href="../../utils.html#utils.ScheduleMaker.ScheduleMaker">[docs]</a>
+<span class="k">class</span> <span class="nc">ScheduleMaker</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The ScheduleMaker class is designed to generate, read, and save schedules for train departures and arrivals.</span>
+
+<span class="sd">    It includes methods for generating a schedule, reading an existing schedule from a file, and saving the</span>
+<span class="sd">    schedule to a file.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">    - schedule (list): A list to store the schedule information as strings.</span>
+<span class="sd">    - depts (list): A list of departure locations.</span>
+<span class="sd">    - arrival (list): A list of arrival locations.</span>
+<span class="sd">    - days (list): A list of days of the week.</span>
+<span class="sd">    - times (list): A list of departure and arrival times.</span>
+<span class="sd">    - t_num (int): An internal variable to keep track of the time index during schedule generation.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">    - generate_schedule(): Generates a schedule and writes it to a &#39;schedule.txt&#39; file.</span>
+<span class="sd">    - read_schedule(): Reads a schedule from the &#39;schedule.txt&#39; file and stores it in the &#39;schedule&#39; attribute.</span>
+<span class="sd">    - save_schedule(): Saves the schedule stored in the &#39;schedule&#39; attribute to the &#39;schedule.txt&#39; file.</span>
+
+<span class="sd">    Example Usage:</span>
+<span class="sd">    schedule_maker = ScheduleMaker()  # Create an instance of the ScheduleMaker class.</span>
+<span class="sd">    schedule_maker.generate_schedule()  # Generate and save a schedule.</span>
+<span class="sd">    schedule_maker.read_schedule()  # Read the saved schedule from the file.</span>
+<span class="sd">    schedule_maker.save_schedule()  # Save any modifications to the schedule back to the file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">depts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Karachi&quot;</span><span class="p">,</span> <span class="s2">&quot;Lahore&quot;</span><span class="p">,</span> <span class="s2">&quot;Rawalpindi&quot;</span><span class="p">,</span> <span class="s2">&quot;Quetta&quot;</span><span class="p">,</span> <span class="s2">&quot;Peshawar&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arrival</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Karachi&quot;</span><span class="p">,</span> <span class="s2">&quot;Lahore&quot;</span><span class="p">,</span> <span class="s2">&quot;Rawalpindi&quot;</span><span class="p">,</span> <span class="s2">&quot;Quetta&quot;</span><span class="p">,</span> <span class="s2">&quot;Peshawar&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">days</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;MON&quot;</span><span class="p">,</span> <span class="s2">&quot;TUE&quot;</span><span class="p">,</span> <span class="s2">&quot;WED&quot;</span><span class="p">,</span> <span class="s2">&quot;THU&quot;</span><span class="p">,</span> <span class="s2">&quot;FRI&quot;</span><span class="p">,</span> <span class="s2">&quot;SAT&quot;</span><span class="p">,</span> <span class="s2">&quot;SUN&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">times</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;0800&quot;</span><span class="p">,</span> <span class="s2">&quot;1600&quot;</span><span class="p">,</span> <span class="s2">&quot;0900&quot;</span><span class="p">,</span> <span class="s2">&quot;1700&quot;</span><span class="p">,</span> <span class="s2">&quot;1000&quot;</span><span class="p">,</span> <span class="s2">&quot;1800&quot;</span><span class="p">,</span> <span class="s2">&quot;1100&quot;</span><span class="p">,</span> <span class="s2">&quot;1900&quot;</span><span class="p">,</span> <span class="s2">&quot;1200&quot;</span><span class="p">,</span> <span class="s2">&quot;2000&quot;</span><span class="p">,</span> <span class="s2">&quot;1300&quot;</span><span class="p">,</span> <span class="s2">&quot;2100&quot;</span><span class="p">,</span> <span class="s2">&quot;1400&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;2200&quot;</span><span class="p">,</span> <span class="s2">&quot;1500&quot;</span><span class="p">,</span> <span class="s2">&quot;2300&quot;</span><span class="p">,</span> <span class="s2">&quot;0830&quot;</span><span class="p">,</span> <span class="s2">&quot;1630&quot;</span><span class="p">,</span> <span class="s2">&quot;0930&quot;</span><span class="p">,</span> <span class="s2">&quot;1730&quot;</span><span class="p">,</span> <span class="s2">&quot;1030&quot;</span><span class="p">,</span> <span class="s2">&quot;1830&quot;</span><span class="p">,</span> <span class="s2">&quot;1130&quot;</span><span class="p">,</span> <span class="s2">&quot;1930&quot;</span><span class="p">,</span> <span class="s2">&quot;1230&quot;</span><span class="p">,</span> <span class="s2">&quot;2030&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;1330&quot;</span><span class="p">,</span> <span class="s2">&quot;2130&quot;</span><span class="p">,</span> <span class="s2">&quot;1430&quot;</span><span class="p">,</span> <span class="s2">&quot;2230&quot;</span><span class="p">,</span> <span class="s2">&quot;1530&quot;</span><span class="p">,</span> <span class="s2">&quot;2330&quot;</span>
+        <span class="p">]</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t_num</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="ScheduleMaker.generate_schedule">
+<a class="viewcode-back" href="../../utils.html#utils.ScheduleMaker.ScheduleMaker.generate_schedule">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates a train schedule and writes it to a &#39;schedule.txt&#39; file.</span>
+
+<span class="sd">        The generated schedule includes information about departures and arrivals between different locations,</span>
+<span class="sd">        including days of the week and corresponding departure and arrival times.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Define the data directory path (assuming it&#39;s at the same level as &#39;src&#39;)</span>
+        <span class="n">data_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+        
+        <span class="c1"># Ensure the &#39;data&#39; directory exists, create it if it doesn&#39;t</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">data_directory</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">data_directory</span><span class="p">)</span>
+        
+        <span class="c1"># Define the file path for schedule.txt</span>
+        <span class="n">schedule_txt_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;schedule.txt&#39;</span><span class="p">)</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">schedule_txt_path</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">depts</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrival</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span><span class="p">:</span>
+                            <span class="k">pass</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="s2">&quot; - TO - &quot;</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">days</span><span class="p">:</span>
+                                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">t_num</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">t_num</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">t_num</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">t_num</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="ne">FileExistsError</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="ScheduleMaker.read_schedule">
+<a class="viewcode-back" href="../../utils.html#utils.ScheduleMaker.ScheduleMaker.read_schedule">[docs]</a>
+    <span class="k">def</span> <span class="nf">read_schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads a train schedule from the &#39;schedule.txt&#39; file and stores it in the &#39;schedule&#39; attribute.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Define the file path for schedule.txt</span>
+        <span class="n">schedule_txt_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;schedule.txt&#39;</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">schedule_txt_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="ScheduleMaker.save_schedule">
+<a class="viewcode-back" href="../../utils.html#utils.ScheduleMaker.ScheduleMaker.save_schedule">[docs]</a>
+    <span class="k">def</span> <span class="nf">save_schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves the schedule stored in the &#39;schedule&#39; attribute to the &#39;schedule.txt&#39; file.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Define the file path for schedule.txt</span>
+        <span class="n">schedule_txt_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;schedule.txt&#39;</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">schedule_txt_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="p">:</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Muhammad Bilal | Muhammad Ashhub Ali | Abdul Arham.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

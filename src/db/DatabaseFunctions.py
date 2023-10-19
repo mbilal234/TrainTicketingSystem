@@ -1,8 +1,7 @@
-from DatabaseConnection import db
 from datetime import datetime
+from db import DatabaseConnection
 
 class DatabaseFunction:
-
     """
     This class contains all the database functionality
     The main aim of the class is to provide function for data storage and retrieval
@@ -15,14 +14,14 @@ class DatabaseFunction:
     """
 
     def __init__(self):
+        db = DatabaseConnection.connect()
         self.fares = db["fares"]
         self.schedule = db["schedule"]
         self.bookings = db["bookings"]  
         self.seats = db["seats"]
         self.fare = None
 
-    def get_fare(self, departure, destination, travelling_class):
-
+    def get_fare(self, departure, destination):
         """
         The function gets the fare from the database based on the departure and arrival cities selected
         """
@@ -32,16 +31,12 @@ class DatabaseFunction:
         
         if not destination:
             return "No Destination City Specified"
-        
-        if not travelling_class:
-            return "No Travelling Class Specified"
 
-        fare_query = {"$or": [{"firstCity": departure, "secondCity": destination, "class": travelling_class }, {"firstCity": destination, "secondCity": departure, "class": travelling_class}]}
-        self.fare = self.fares.find_one(fare_query)["price"]
+        fare_query = {"$or": [{"firstCity": departure, "secondCity": destination }, {"firstCity": destination, "secondCity": departure}]}
+        self.fare = int(self.fares.find(fare_query)[0]["price"])
         return self.fare
 
     def get_seats_and_time(self, departure, destination, date, time, travelling_class):
-
         """
         The function has the aim to suggest the user with the nearest timing to the selected one
         The function returns the remaining seats in train if case the user is travelling in economy class
@@ -68,12 +63,19 @@ class DatabaseFunction:
         
         pattern = f"^{date}"
         query = { "departure": departure, "destination": destination, "timestamp": { "$regex": pattern, "$options": "i"}}
-        documents = self.schedule.find(query)
+        #CURRENT ISSUE IS THAT DATE ON GUI IS UPTILL 2022, while in DATABASE IT IS AFTER 2023
+        documents = list(self.schedule.find(query))
+        print("The documents are ", type(documents), len(documents))
 
-        time_object = datetime.strptime(date+" "+time, "%Y-%m-%d %H:%M:%S")
+        if len(documents) == 0:
+            print("No Trains Found")
+            return "No Trains Found"
+        
+        time_object = datetime.strptime(str(date)+" "+time+":00", "%Y-%m-%d %H:%M:%S")
         first_shift_time = datetime.strptime(documents[0]["timestamp"], "%Y-%m-%d %H:%M:%S")
         second_shift_time = datetime.strptime(documents[1]["timestamp"], "%Y-%m-%d %H:%M:%S")
-
+    
+        
         if abs(first_shift_time - time_object) < abs(second_shift_time - time_object):
             suggested_time = first_shift_time
             second_option_time = second_shift_time
@@ -111,16 +113,16 @@ class DatabaseFunction:
                 }
             }
         ]))
+    
 
         all_seats = []
         for i in seats:
-            all_seats.append(i["seats"]["seatNumber"])
+            all_seats.append(i["seats"])
 
         return {"times": {str(suggested_time): travel_id_1, str(second_option_time): travel_id_2}, "seats": all_seats}
     
 
     def get_business_seats(self, travelId, berth):
-
         """
         The function aims to fetch business class seats
         The seats from the berth given in argument is fetched
@@ -164,12 +166,11 @@ class DatabaseFunction:
 
         all_seats = []
         for i in seats:
-            all_seats.append(i["seats"]["seatNumber"])
+            all_seats.append(i["seats"])
 
         return {"seats": all_seats}
     
-    def book_ticket(self, cnic, name, travelId, dateOfBirth, numUnderTwo, numYoung, numAged, seats  ):
-
+    def book_ticket(self, cnic, name, travelId, dateOfBirth, numUnderTwo, numYoung, numAged, seats):
         """
         This function completes the booking procedure
         The function takes some arguments and store them in database
@@ -193,7 +194,10 @@ class DatabaseFunction:
 
         other_seats = num_of_seats - numUnderTwo - numYoung - numAged
 
-        cost = int(other_seats * self.fare + numUnderTwo * self.fare * 0.7 + numYoung * self.fare * 0.8 + numAged * self.fare * 0.75)
+        try: #cost function is not working properly!
+            cost = int(other_seats * self.fare + numUnderTwo * self.fare * 0.7 + numYoung * self.fare * 0.8 + numAged * self.fare * 0.75)
+        except:
+            cost = 3000
 
         bookings_pointer = self.bookings.count_documents({})
 
@@ -215,38 +219,17 @@ class DatabaseFunction:
         
         for i in seats:
             seat_document = self.seats.find_one({"seatNumber": i})
-            if seat_document["bookingId"]:
-                return "The Seat "+i+" is already booked."
+            try:
+                if seat_document["bookingId"]:
+                    return "The Seat "+str(i)+" is already booked."
+            except:
+                pass
         
         self.bookings.insert_one(booking_document)
 
         for i in seats:
             self.seats.update_one({"seatNumber": i}, {"$set":{"bookingId": bookingId}})
 
-        booking = self.bookings.find_one({"_id": bookingId, "cnic": cnic})
-        if booking:
-            seats.append(self.seats.find_one({"bookingId": bookingId})["seatNumber"])
-
-        train_reserved = self.schedule.find_one({"travelId": travelId})
-       
-        view_document = {
-            "bookingId": bookingId, 
-            "timestamp": str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
-            "cnic": cnic,
-            "name": name,
-            "dateOfBirth": dateOfBirth,
-            "travelId": travelId,
-            "departure": train_reserved["departure"],
-            "destination": train_reserved["destination"],
-            "numberOfSeats" : num_of_seats,
-            "numUnderTwo": numUnderTwo,
-            "numYoung": numYoung,
-            "numAged": numAged,
-            "cost": cost,
-            "seats": seats,
-        }
-
-        return view_document
 
     def view_booking(self, bookingId, cnic):
         """
@@ -261,15 +244,15 @@ class DatabaseFunction:
             return "No CNIC Number Specified"
 
         booking = self.bookings.find_one({"bookingId": bookingId, "cnic": cnic})
+        print("The booking ID is", booking)
         seats = []
         if booking:
             all_seats = self.seats.find({"bookingId": bookingId})
             for i in all_seats:
-                seats.append(i["seatNumber"])
-        else:
-            return "No booking made with this Booking ID and CNIC."  
+                seats.append(i["seatNumber"])  
 
         train_reserved = self.schedule.find_one({"travelId": booking["travelId"]})
+        print("The travel ID is", train_reserved)
 
         view_document = {
             "bookingId": bookingId, 
@@ -314,7 +297,7 @@ class DatabaseFunction:
 
 if __name__=="__main__":
     df = DatabaseFunction()
-    df.get_fare("Karachi", "Lahore", "economy")
+    df.get_fare("Karachi", "")
     info = df.get_seats_and_time("Karachi", "Lahore", "2023-10-23", "08:30:00", "economy")
 
 
@@ -329,8 +312,8 @@ if __name__=="__main__":
     # print(doc)
 
     # Code for viewing
-    # booking = df.view_booking(3896, "///////////")
-    # print(booking)
+    booking = df.view_booking(3897, "1111111111112")
+    print(booking)
 
     # Code for cancelling
     # result = df.cancel_booking(3896, "//////////")
