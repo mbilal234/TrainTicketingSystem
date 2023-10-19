@@ -5,17 +5,11 @@ Created on Fri Feb  4 14:18:25 2022
 @author: M. Ashhub Ali
 """
 
-import sys
 from PyQt5 import QtGui, QtWidgets, uic
 from PyQt5.QtCore import *
 import calendar
-import csv
-from csv import DictReader
-from datetime import datetime, timedelta
 import os
-import json
-from adjuncts import ScheduleMaker, TrainsMaker, CustomerInformation
-from db import DatabaseConnection, DatabaseFunctions
+from db import DatabaseFunctions
 
 
 directory = os.getcwd()
@@ -84,6 +78,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.submitButton.clicked.connect(
             lambda: self.BookTicket(boxes, details, frame, 0))
+        
+        L = [self.FareFrame, self.BookingDetailsFrame1, self.AvailableCombo, self.NameInput, self.cnicInput, self.SuggestedTime, self.Above60Box, self.SeatsBox,
+             self.Age2t18Box, self.BookDetails, self.dobInput, self.departureInput, self.destinationInput, self.DateInput, self.TypeInput, self.timeInput]
+        self.cancelButton.clicked.connect(lambda: self.SetDefault(L))
         self.cancelButton.clicked.connect(
             lambda: self.tabWidget.setCurrentIndex(0))
         self.SeatsBox.valueChanged.connect(lambda: self._update2to18(
@@ -97,8 +95,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ViewReservationButton.clicked.connect(
             lambda: self.tabWidget.setCurrentIndex(2))
 
-        L = [self.FareFrame, self.BookingDetailsFrame1, self.AvailableCombo, self.NameInput, self.cnicInput, self.SuggestedTime, self.Above60Box, self.SeatsBox,
-             self.Age2t18Box, self.BookDetails, self.dobInput, self.departureInput, self.destinationInput, self.DateInput, self.TypeInput, self.timeInput]
         self.ViewReservationButton.clicked.connect(lambda: self.SetDefault(L))
         self.MenuButtonBookingTab.clicked.connect(
             lambda: self.tabWidget.setCurrentIndex(0))
@@ -257,7 +253,7 @@ class MainWindow(QtWidgets.QMainWindow):
         rateframes[6].setText(str(id))
 
         self.ViewReservationButton.clicked.connect(lambda: self.ViewReservation(
-            id, self.cnicInput.text(), out, self.ViewTicketFrame, self.MessageFrameView))
+            id, details["CNIC"], out, self.ViewTicketFrame, self.MessageFrameView))
         return None
 
     def BookTicket(self, inputbox, moredetails, frame, signal):
