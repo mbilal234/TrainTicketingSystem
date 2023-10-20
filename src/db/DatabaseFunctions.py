@@ -1,8 +1,8 @@
 from datetime import datetime
 from db import DatabaseConnection
+
 # import DatabaseConnection
 class DatabaseFunction:
-
     """
     This class contains all the database functionality
     The main aim of the class is to provide function for data storage and retrieval
@@ -22,7 +22,7 @@ class DatabaseFunction:
         self.seats = db["seats"]
         self.fare = None
 
-    def get_fare(self, departure, destination, class_type):
+    def get_fare(self, departure, destination):
 
         """
         The function gets the fare from the database based on the departure and arrival cities selected
@@ -42,7 +42,6 @@ class DatabaseFunction:
         return self.fare
 
     def get_seats_and_time(self, departure, destination, date, time, travelling_class):
-
         """
         The function has the aim to suggest the user with the nearest timing to the selected one
         The function returns the remaining seats in train if case the user is travelling in economy class
@@ -129,7 +128,6 @@ class DatabaseFunction:
     
 
     def get_business_seats(self, travelId, berth):
-
         """
         The function aims to fetch business class seats
         The seats from the berth given in argument is fetched
@@ -177,50 +175,7 @@ class DatabaseFunction:
 
         return {"seats": all_seats}
     
-    def get_economy_seats(self, travelId):
-
-        """
-        The function aims to fetch business class seats
-        The seats from the berth given in argument is fetched
-        The function takes travelId and berth in arguments which are used in query
-        This function returns a list of seats to suggest the user
-        """
-
-        if not travelId:
-            return "No Travel ID Specified"
-
-        seats = list(self.schedule.aggregate([
-            {
-                "$match": {
-                    "travelId": travelId
-                }
-            },
-            {
-                "$lookup": {
-                    "from": "seats",
-                    "localField": "travelId",
-                    "foreignField": "travelId",
-                    "as": "seats"
-                }
-            },
-            {
-                "$unwind": "$seats"
-            },
-            {
-                "$match": {
-                    "seats.class": "economy",
-                    "seats.bookingId": None
-                }
-            }
-        ]))
-
-        all_seats = []
-        for i in seats:
-            all_seats.append(i["seats"])
-
-        return {"seats": all_seats}
-    
-    def book_ticket(self, cnic, name, travelId, travelling_class, berth, dateOfBirth, numUnderTwo, numYoung, numAged, num_of_seats):
+    def book_ticket(self, cnic, name, travelId, dateOfBirth, numUnderTwo, numYoung, numAged, seats):
 
         """
         This function completes the booking procedure

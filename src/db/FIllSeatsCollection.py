@@ -1,4 +1,5 @@
-from DatabaseConnection import db
+# from DatabaseConnection import db
+#ERRORED IMPORT NEED FIXING
 
 class FillSeatsCollection:
 

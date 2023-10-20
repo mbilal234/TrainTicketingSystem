@@ -1,9 +1,8 @@
-from DatabaseConnection import db   
+# from DatabaseConnection import db
+#ERRORED IMPORT, NEED FIXING   
 
 class FillFaresCollection:
-
-    """
-    This class is built with the purpose of filling the fares collection in the database
+    """This class is built with the purpose of filling the fares collection in the database
     Fares are based on the cities between which the train is travelling.
     The class has two methods
     A generate_documents() method that will generate the fares
@@ -18,9 +17,7 @@ class FillFaresCollection:
         self.fares = []
 
     def generate_documents(self):
-
-        """
-        This function will generate all the fares
+        """This function will generate all the fares
         The function does not take any arguments and returns None
         The function generates objects that contain all the fares information
         The objects are then saved in self.fares list
@@ -33,8 +30,7 @@ class FillFaresCollection:
                 self.fare_num += 1
 
     def save_documents(self):
-        """
-        After the fare prices have been stored in a list by the generate_fares() function
+        """After the fare prices have been stored in a list by the generate_fares() function
         This function is called to save all objects in the array to our database
         """
         collection = db["fares"]
@@ -43,9 +39,7 @@ class FillFaresCollection:
 
 
 if __name__=="__main__":
-    ffc = FillFaresCollection()
-    ffc.generate_documents()
-    ffc.save_documents()
+    print(help(FillFaresCollection))
 
 
         

@@ -7,6 +7,13 @@ from dotenv import load_dotenv
 import os
 
 def connect():
+    """Connects to the MongoDB database specified in the MONGO_URI environment variable and returns a reference to the
+    'train_reservation_system' database.
+
+    Returns:
+        pymongo.database.Database: A reference to the 'train_reservation_system' database.
+    """
+    
     load_dotenv()
     my_client = pymongo.MongoClient(os.getenv("MONGO_URI"))
     db = my_client["train_reservation_system"]
