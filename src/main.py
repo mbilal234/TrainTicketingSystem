@@ -1,5 +1,5 @@
 # Import necessary modules and classes
-from adjuncts import  GUI
+from utils import  GUI
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import *
 import sys
