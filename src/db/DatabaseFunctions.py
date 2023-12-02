@@ -1,5 +1,5 @@
 from datetime import datetime
-from db import DatabaseConnection
+import DatabaseConnection
 
 # import DatabaseConnection
 class DatabaseFunction:
@@ -22,7 +22,7 @@ class DatabaseFunction:
         self.seats = db["seats"]
         self.fare = None
 
-    def get_fare(self, departure, destination):
+    def get_fare(self, departure, destination, class_type):
 
         """
         The function gets the fare from the database based on the departure and arrival cities selected
@@ -171,11 +171,10 @@ class DatabaseFunction:
 
         all_seats = []
         for i in seats:
-            all_seats.append(i["seats"])
-
+            all_seats.append(i["seats"]["seatNumber"])
         return {"seats": all_seats}
     
-    def book_ticket(self, cnic, name, travelId, dateOfBirth, numUnderTwo, numYoung, numAged, seats):
+    def book_ticket(self, cnic, name, travelId, travelling_class, berth, dateOfBirth, num_of_seats, numUnderTwo, numYoung, numAged):
 
         """
         This function completes the booking procedure
@@ -210,7 +209,6 @@ class DatabaseFunction:
             seats = list(self.seats.find({"class": travelling_class, "travelId": travelId, "bookingId": None, "seatNumber": { "$regex": pattern, "$options": "i"},}))
 
         n = len(seats)
-        print(n)
 
         if n < num_of_seats:
             return "Not Enough Seats Available"

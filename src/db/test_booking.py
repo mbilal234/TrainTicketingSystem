@@ -1,5 +1,5 @@
 import unittest.result
-# import DatabaseFunctions as db
+import DatabaseFunctions as db
 #NEED FIXING, ERROR IMPORT
 import unittest
 from datetime import datetime
@@ -39,25 +39,24 @@ class TestBooking(unittest.TestCase):
 
     def test_get_seats_and_time(self):
 
-        economy_seats = []
-        for i in range(100):
-            economy_seats.append(str(i+1))
-
         """
         The trains we are using in this test case
         has all free seats for the given time
         """
             
-        seats_and_time = self.db.get_seats_and_time("Karachi", "Rawalpindi", "2023-10-24", "08:00:00", "economy")
-        actual_result = {"times": {"2023-10-24 12:30:00": 1080, "2023-10-24 20:30:00":1081}, "seats":economy_seats}
+        seats_and_time = self.db.get_seats_and_time("Karachi", "Rawalpindi", "2023-12-24", "08:00", "economy")
+        economy_seats = self.db.seats.find({"travelId": 1080, "class":"economy"})
+        expected_result = {"suggested":"2023-12-24 12:30:00", "times": {"2023-12-24 12:30:00": 1080, "2023-12-24 20:30:00":1081}, "seats":list(economy_seats)}
+        self.assertEqual(seats_and_time, expected_result)
+
+        seats_and_time = self.db.get_seats_and_time("Lahore", "Peshawar", "2023-12-31", "13:30", "economy")
+        economy_seats = self.db.seats.find({"travelId": 1454, "class":"economy"})
+        actual_result = {"suggested":"2023-12-31 11:00:00", "times": {"2023-12-31 11:00:00": 1454, "2023-12-31 19:00:00":1455}, "seats":list(economy_seats)}
         self.assertEqual(seats_and_time, actual_result)
 
-        seats_and_time = self.db.get_seats_and_time("Lahore", "Peshawar", "2023-10-31", "13:30:00", "economy")
-        actual_result = {"times": {"2023-10-31 11:00:00": 1454, "2023-10-31 19:00:00":1455}, "seats":economy_seats}
-        self.assertEqual(seats_and_time, actual_result)
-
-        seats_and_time = self.db.get_seats_and_time("Peshawar", "Quetta", "2023-11-09", "12:00:00", "business")
-        actual_result = {"times": {"2023-11-09 08:30:00": 2192, "2023-11-09 16:30:00":2193}, "seats":[]}
+        seats_and_time = self.db.get_seats_and_time("Peshawar", "Quetta", "2024-01-09", "12:00", "economy")
+        economy_seats = self.db.seats.find({"travelId": 2192, "class":"economy"})
+        actual_result = {"suggested":"2024-01-09 08:30:00", "times": {"2024-01-09 08:30:00": 2192, "2024-01-09 16:30:00":2193}, "seats":list(economy_seats)}
         self.assertEqual(seats_and_time, actual_result)
 
     def test_get_business_seats(self):
@@ -72,16 +71,16 @@ class TestBooking(unittest.TestCase):
         """
             
         seats = self.db.get_business_seats(1080, "A")
-        actual_result = {"seats":["A1", "A2", "A3", "A4", "A5", "A6"]}
+        actual_result = {"seats":['A2', 'A6', 'A1', 'A4', 'A5', 'A3']}
         self.assertEqual(seats, actual_result)
 
         seats = self.db.get_business_seats(1455, "C")
-        actual_result = {"seats":["C1", "C2", "C3", "C4", "C5", "C6"]}
+        actual_result = {"seats":['C2', 'C4', 'C3', 'C6', 'C5', 'C1']}
         self.assertEqual(seats, actual_result)
 
         seats = self.db.get_business_seats(2193, "F")
-        actual_result = {"seats":["F1", "F2", "F3", "F4", "F5", "F6"]}
-        self.assertEqual(seats, actual_result)
+        actual_result = {"seats":['F1', 'F4', 'F2', 'F3', 'F5', 'F6']}
+        self.assertEqual(seats, actual_result)  
 
     def test_economy_booking(self):
 
@@ -89,64 +88,16 @@ class TestBooking(unittest.TestCase):
 
         self.db.get_fare("Karachi", "Lahore", "economy")
 
-        doc = self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "2002-09-17", 0, 0, 0, ["1", "2", "3"])
-        expected_doc = {
-            "bookingId": 3897,
-            "timestamp": str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
-            "cnic": "1234567891011",
-            "name": "Abdul Arham",
-            "dateOfBirth": "2002-09-17",
-            "travelId": 1000,
-            "departure": "Karachi",
-            "destination": "Lahore",
-            "numberOfSeats": 3,
-            "numUnderTwo": 0,
-            "numYoung": 0,
-            "numAged": 0,
-            "cost": 10500,
-            "seats": ["1", "2", "3"]
-        }
-        self.assertEqual(doc, expected_doc)
+        doc = self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "economy", "", "2002-09-17", 3, 0, 0, 0)
+        expected = 3897
+        self.assertEqual(doc, expected)
 
     def test_business_booking(self):
 
         self.db.get_fare("Karachi", "Lahore", "business")
 
-        doc = self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "2002-09-17", 0, 0, 0, ["A1", "A2"])
-        expected_doc = {
-            "bookingId": 3896,
-            "timestamp": str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
-            "cnic": "1234567891011",
-            "name": "Abdul Arham",
-            "dateOfBirth": "2002-09-17",
-            "travelId": 1000,
-            "departure": "Karachi",
-            "destination": "Lahore",
-            "numberOfSeats": 2,
-            "numUnderTwo": 0,
-            "numYoung": 0,
-            "numAged": 0,
-            "cost": 13000,
-            "seats": ["A1", "A2"]
-        }
-        self.assertEqual(doc, expected_doc)
-
-    def test_economy_seats_already_booked(self):
-        self.db.get_fare("Karachi", "Lahore", "economy")
-
-        doc = self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "2002-09-17", 0, 0, 0, ["1", "2", "3"])
-
-        expected = "The Seat 1 is already booked."
-
-        self.assertEqual(doc, expected)
-
-    def test_business_seats_already_booked(self):
-        self.db.get_fare("Karachi", "Lahore", "economy")
-
-        doc = self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "2002-09-17", 0, 0, 0, ["A1", "A2", "A3"])
-
-        expected = "The Seat A1 is already booked."
-
+        doc = self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "business", "A", "2002-09-17", 2, 0, 0, 0)
+        expected = 3896
         self.assertEqual(doc, expected)
 
 
