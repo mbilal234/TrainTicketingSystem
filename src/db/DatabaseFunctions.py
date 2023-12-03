@@ -252,7 +252,6 @@ class DatabaseFunction:
             return "No CNIC Number Specified"
 
         booking = self.bookings.find_one({"bookingId": bookingId, "cnic": cnic})
-        print("The booking ID is", booking)
         seats = []
         seat_type = ""
         if booking:
@@ -261,9 +260,10 @@ class DatabaseFunction:
                 if seat_type == "":
                     seat_type = i["class"]
                 seats.append(i["seatNumber"])  
+        else:
+            return "No booking made with this Booking ID and CNIC."  
 
         train_reserved = self.schedule.find_one({"travelId": booking["travelId"]})
-        print("The travel ID is", train_reserved)
 
         view_document = {
             "bookingId": bookingId, 
