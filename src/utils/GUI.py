@@ -10,10 +10,7 @@ from PyQt5.QtCore import *
 import calendar
 import os
 from db import DatabaseFunctions
-
-
-directory = os.getcwd()
-
+from utils import Popup
 
 class MainWindow(QtWidgets.QMainWindow):
     """
@@ -48,7 +45,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        uic.loadUi(directory+r"\\train.ui", self)
+        uic.loadUi(os.getcwd()+r"\\train.ui", self)
         self.setWindowTitle("Train Reservation System")
         self.setWindowIcon(QtGui.QIcon("assets\\train.png"))
         self.db = DatabaseFunctions.DatabaseFunction()
@@ -244,6 +241,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
         id = self.db.book_ticket(details["CNIC"], details["Name"], travelID, str(details["DOB"]), 0, details["Kids"], details["Elderly"], int(details["Seats"]),details['Type'].lower(), details["Berth"])
 
+        if type(id) is str:
+            popup = Popup.Popup()
+            popup.error_popup(id)
+            return None
+        elif id == None:
+            popup = Popup.Popup()
+            popup.error_popup("Booking Failed!")
+            return None
+        
         rateframes[0].hide()
         rateframes[1].show()
         rateframes[2].setText("Rs. "+str(price[0]))
@@ -251,6 +257,9 @@ class MainWindow(QtWidgets.QMainWindow):
         rateframes[4].setText("Rs. "+str(price[2]))
         rateframes[5].setText("Rs. "+str(price[3]))
         rateframes[6].setText(str(id))
+
+        popup = Popup.Popup()
+        popup.success_popup("Your booking has been successfully completed! Your booking ID is: " + str(id))
 
         self.ViewReservationButton.clicked.connect(lambda: self.ViewReservation(
             id, details["CNIC"], out, self.ViewTicketFrame, self.MessageFrameView))
@@ -348,19 +357,33 @@ class MainWindow(QtWidgets.QMainWindow):
             outputs[8].setText(str(','.join(details['seats'])))
 
     def RemoveBooking(self,  details):
-        self.db.cancel_booking(details['bookingId'], details['cnic'])
+        return self.db.cancel_booking(details['bookingId'], details['cnic'])
 
     def CancelBooking(self):
         bookingId = self.BookingInputCancel.text()
         cnic = self.cnicInputCancel.text()
-        print(bookingId,cnic)
+        if bookingId == "" or cnic == "":
+            popup = Popup.Popup()
+            popup.missing_popup("Booking ID or CNIC is missing!")
+            return None
         details = self.db.view_booking(int(bookingId), cnic)
         outCancel = [self.cnicOutputCancel, self.NameOutputCancel, self.FromOutputCancel, self.ToOutputCancel,
                      self.DateOutputCancel, self.DayOutputCancel, self.TimeOutputCancel,
                      self.TypeOutputCancel, self.SeatsOutputCancel]
-
-        if details and len(details) > 0:
+        
+        if details:
             self.ViewReservation(bookingId, cnic, outCancel,
-                                 self.CancelTicketFrame, self.MessageFrameCancel)
-            #self.message.setText("Your Booking has been successfully cancelled! A refund of 50% has been transferred to your account.")
-            self.RemoveBooking(details)
+                                self.CancelTicketFrame, self.MessageFrameCancel)
+            popup = Popup.Popup()
+            x = popup.cancel_popup(self)
+            if x == "&Yes":
+                if self.RemoveBooking(details) != "The Booking has been cancelled":
+                    popup = Popup.Popup()
+                    popup.error_popup("Booking cancellation failed!")
+                popup.success_popup(
+                    "Your Booking has been successfully cancelled! A refund of 50% has been transferred to your account.")
+            elif x == "&No":
+                popup.error_popup("Booking cancellation failed!")
+        else:
+            popup = Popup.Popup()
+            popup.error_popup("Booking not Found!")
