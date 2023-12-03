@@ -208,8 +208,9 @@ class MainWindow(QtWidgets.QMainWindow):
             combobox.addItem(i.split(' ')[1][:-3])
 
     def fareCost(self, details):
+        print(details)
         cost = self.db.get_fare(
-            details["Departure"], details["Destination"], details["Type"].lower())
+            details["Departure"], details["Destination"],details["Type"].lower())
 
         discount = int(
             (0.4*cost*int(details["Kids"])) + (0.2*cost*int(details["Elderly"])))
@@ -241,8 +242,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if details["Time"] in i:
                 travelID = travelIDs['times'][i]
 
-        id = self.db.book_ticket(details["CNIC"], details["Name"], travelID, details["Type"].lower(
-        ), details["Berth"], str(details["DOB"]), 0, details["Kids"], details["Elderly"], int(details["Seats"]))
+        id = self.db.book_ticket(details["CNIC"], details["Name"], travelID, str(details["DOB"]), 0, details["Kids"], details["Elderly"], int(details["Seats"]),details['Type'].lower(), details["Berth"])
 
         rateframes[0].hide()
         rateframes[1].show()
@@ -353,6 +353,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def CancelBooking(self):
         bookingId = self.BookingInputCancel.text()
         cnic = self.cnicInputCancel.text()
+        print(bookingId,cnic)
         details = self.db.view_booking(int(bookingId), cnic)
         outCancel = [self.cnicOutputCancel, self.NameOutputCancel, self.FromOutputCancel, self.ToOutputCancel,
                      self.DateOutputCancel, self.DayOutputCancel, self.TimeOutputCancel,
@@ -361,5 +362,5 @@ class MainWindow(QtWidgets.QMainWindow):
         if details and len(details) > 0:
             self.ViewReservation(bookingId, cnic, outCancel,
                                  self.CancelTicketFrame, self.MessageFrameCancel)
-            # self.message.setText("Your Booking has been successfully cancelled! A refund of 50% has been transferred to your account.")
+            #self.message.setText("Your Booking has been successfully cancelled! A refund of 50% has been transferred to your account.")
             self.RemoveBooking(details)

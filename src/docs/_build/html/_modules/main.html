@@ -70,8 +70,8 @@
              
   <h1>Source code for main</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Import necessary modules and classes</span>
-<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">CustomerInformation</span><span class="p">,</span> <span class="n">GUI</span><span class="p">,</span> <span class="n">ScheduleMaker</span><span class="p">,</span> <span class="n">Train</span><span class="p">,</span> <span class="n">TrainsMaker</span>
-<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">QtGui</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">uic</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span>  <span class="n">GUI</span>
+<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">QtWidgets</span>
 <span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">pymongo</span>
@@ -107,37 +107,6 @@
     <span class="n">db</span> <span class="o">=</span> <span class="n">my_client</span><span class="p">[</span><span class="s2">&quot;train_reservation_system&quot;</span><span class="p">]</span>
     <span class="c1"># Create an instance of ScheduleMaker</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
-    <span class="n">schedule_maker</span> <span class="o">=</span> <span class="n">ScheduleMaker</span><span class="o">.</span><span class="n">ScheduleMaker</span><span class="p">()</span>
-
-    <span class="c1"># Generate a schedule</span>
-    <span class="n">schedule_maker</span><span class="o">.</span><span class="n">generate_schedule</span><span class="p">()</span>
-
-    <span class="c1"># Read the schedule from file</span>
-    <span class="n">schedule_maker</span><span class="o">.</span><span class="n">read_schedule</span><span class="p">()</span>
-
-    <span class="c1"># Modify the schedule list if needed</span>
-    <span class="c1"># (Add any necessary schedule modifications here)</span>
-
-    <span class="c1"># Save the modified schedule to a file</span>
-    <span class="n">schedule_maker</span><span class="o">.</span><span class="n">save_schedule</span><span class="p">()</span>
-
-    <span class="c1"># Create an instance of TrainsMaker</span>
-    <span class="n">trains_maker</span> <span class="o">=</span> <span class="n">TrainsMaker</span><span class="o">.</span><span class="n">TrainsMaker</span><span class="p">()</span>
-
-    <span class="c1"># Generate train objects</span>
-    <span class="n">trains</span> <span class="o">=</span> <span class="n">trains_maker</span><span class="o">.</span><span class="n">generate_train_objects</span><span class="p">()</span>
-
-    <span class="c1"># Save the train objects to a file</span>
-    <span class="n">trains_maker</span><span class="o">.</span><span class="n">save_trains_to_file</span><span class="p">(</span><span class="n">trains</span><span class="p">)</span>
-
-    <span class="c1"># Try to create a file for customer information (if it doesn&#39;t already exist)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;TrainReservation.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">FileExistsError</span><span class="p">:</span>
-        <span class="k">pass</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># If the file is created, initialize the CustomerInformation class</span>
-        <span class="n">CustomerInformation</span><span class="o">.</span><span class="n">CustomerInformation</span><span class="p">()</span>
 
     <span class="c1"># Create a QApplication</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
