@@ -10,10 +10,8 @@ from PyQt5.QtCore import *
 import calendar
 import os
 from db import DatabaseFunctions
-
-
-directory = os.getcwd()
-
+from utils import Popups
+from utils.InputFieldHelper import CorrectName, CorrectCNIC, CorrectBooking
 
 class MainWindow(QtWidgets.QMainWindow):
     """
@@ -48,10 +46,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        uic.loadUi(directory+r"\\train.ui", self)
+        uic.loadUi(os.getcwd()+r"\\train.ui", self)
         self.setWindowTitle("Train Reservation System")
         self.setWindowIcon(QtGui.QIcon("assets\\train.png"))
         self.db = DatabaseFunctions.DatabaseFunction()
+        self.popups = Popups.Popup()
 
         self.BookButton.clicked.connect(
             lambda: self.tabWidget.setCurrentIndex(1))
@@ -61,9 +60,9 @@ class MainWindow(QtWidgets.QMainWindow):
             lambda: self.tabWidget.setCurrentIndex(3))
 
         self.NameInput.textChanged.connect(
-            lambda: self.CorrectName(self.NameInput, self.submitButton))
+            lambda: CorrectName(self.NameInput, self.submitButton))
         self.cnicInput.textChanged.connect(
-            lambda: self.CorrectCNIC(self.cnicInput, self.submitButton))
+            lambda: CorrectCNIC(self.cnicInput, self.submitButton))
         self.DateInput.setMinimumDate(QDate.currentDate())
         self.DateInput.setDate(QDate.currentDate())
         self.DateInput.setMaximumDate(QDate.currentDate().addDays(30))
@@ -102,9 +101,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ViewTicketFrame.hide()
         self.MessageFrameView.hide()
         self.BookingInputBox.textChanged.connect(
-            lambda: self.CorrectBooking(self.BookingInputBox, self.ViewSubmit))
+            lambda: CorrectBooking(self.BookingInputBox, self.ViewSubmit))
         self.cnicInputBox.textChanged.connect(
-            lambda: self.CorrectCNIC(self.cnicInputBox, self.ViewSubmit))
+            lambda: CorrectCNIC(self.cnicInputBox, self.ViewSubmit))
         self.ViewSubmit.clicked.connect(lambda: self.ViewReservation(self.BookingInputBox.text(
         ), self.cnicInputBox.text(), out, self.ViewTicketFrame, self.MessageFrameView))
         self.MenuButtonViewTab.clicked.connect(lambda: self.ReturnToMenu(
@@ -113,42 +112,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.CancelTicketFrame.hide()
         self.MessageFrameCancel.hide()
         self.BookingInputCancel.textChanged.connect(
-            lambda: self.CorrectBooking(self.BookingInputCancel, self.CancelSubmit))
+            lambda: CorrectBooking(self.BookingInputCancel, self.CancelSubmit))
         self.cnicInputCancel.textChanged.connect(
-            lambda: self.CorrectCNIC(self.cnicInputCancel, self.CancelSubmit))
+            lambda: CorrectCNIC(self.cnicInputCancel, self.CancelSubmit))
         self.CancelSubmit.clicked.connect(self.CancelBooking)
         self.MenuButtonCancelTab.clicked.connect(lambda: self.ReturnToMenu(
             [self.CancelTicketFrame, self.MessageFrameCancel], self.BookingInputCancel, self.cnicInputCancel))
-
-    def CorrectName(self, name, button):
-        if not all(x.isalpha() or x.isspace() for x in name.text()) or (name.text() == ""):
-            name.setStyleSheet(
-                "color: rgb(13, 49, 58);background-color: rgb(232, 246, 239);border-radius: 10px;border: 1px solid red;")
-            button.setEnabled(False)
-        else:
-            name.setStyleSheet(
-                "color: rgb(13, 49, 58);background-color: rgb(232, 246, 239);border-radius: 10px;border: 1px solid black;")
-            button.setEnabled(True)
-
-    def CorrectBooking(self, booking, button):
-        if not all(x.isdigit() for x in booking.text()) or len(booking.text()) not in [4, 5] or (booking.text() == ""):
-            booking.setStyleSheet(
-                "color: rgb(13, 49, 58);background-color: rgb(232, 246, 239);border-radius: 10px;border: 1px solid red;")
-            button.setEnabled(False)
-        else:
-            booking.setStyleSheet(
-                "color: rgb(13, 49, 58);background-color: rgb(232, 246, 239);border-radius: 10px;border: 1px solid black;")
-            button.setEnabled(True)
-
-    def CorrectCNIC(self, cnic, button):
-        if not all(x.isdigit() for x in cnic.text()) or len(cnic.text()) < 13 or (cnic.text() == ""):
-            cnic.setStyleSheet(
-                "color: rgb(13, 49, 58);background-color: rgb(232, 246, 239);border-radius: 10px;border: 1px solid red;")
-            button.setEnabled(False)
-        else:
-            cnic.setStyleSheet(
-                "color: rgb(13, 49, 58);background-color: rgb(232, 246, 239);border-radius: 10px;border: 1px solid black;")
-            button.setEnabled(True)
 
     def ReturnToMenu(self, frames, name, cnic):
         for frame in frames:
@@ -160,7 +129,6 @@ class MainWindow(QtWidgets.QMainWindow):
         cnic.setStyleSheet(
             "color: rgb(13, 49, 58);background-color: rgb(232, 246, 239);border-radius: 10px;border: 1px solid black;")
         self.tabWidget.setCurrentIndex(0)
-        # self.message.setText("")
 
     def _updateDestination(self, depart, dest):
         dest.clear()
@@ -244,6 +212,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
         id = self.db.book_ticket(details["CNIC"], details["Name"], travelID, str(details["DOB"]), 0, details["Kids"], details["Elderly"], int(details["Seats"]),details['Type'].lower(), details["Berth"])
 
+        if type(id) is str:
+            self.popups.error_popup(id)
+            return None
+        elif id == None:
+            self.popups.error_popup("Booking Failed!")
+            return None
+        
         rateframes[0].hide()
         rateframes[1].show()
         rateframes[2].setText("Rs. "+str(price[0]))
@@ -251,6 +226,8 @@ class MainWindow(QtWidgets.QMainWindow):
         rateframes[4].setText("Rs. "+str(price[2]))
         rateframes[5].setText("Rs. "+str(price[3]))
         rateframes[6].setText(str(id))
+
+        self.popups.success_popup("Your booking has been successfully completed! Your booking ID is: " + str(id))
 
         self.ViewReservationButton.clicked.connect(lambda: self.ViewReservation(
             id, details["CNIC"], out, self.ViewTicketFrame, self.MessageFrameView))
@@ -348,19 +325,28 @@ class MainWindow(QtWidgets.QMainWindow):
             outputs[8].setText(str(','.join(details['seats'])))
 
     def RemoveBooking(self,  details):
-        self.db.cancel_booking(details['bookingId'], details['cnic'])
+        return self.db.cancel_booking(details['bookingId'], details['cnic'])
 
     def CancelBooking(self):
         bookingId = self.BookingInputCancel.text()
         cnic = self.cnicInputCancel.text()
-        print(bookingId,cnic)
+        if bookingId == "" or cnic == "":
+            self.popups.missing_popup("Booking ID or CNIC is missing!")
+            return None
         details = self.db.view_booking(int(bookingId), cnic)
         outCancel = [self.cnicOutputCancel, self.NameOutputCancel, self.FromOutputCancel, self.ToOutputCancel,
                      self.DateOutputCancel, self.DayOutputCancel, self.TimeOutputCancel,
                      self.TypeOutputCancel, self.SeatsOutputCancel]
-
-        if details and len(details) > 0:
+        
+        if details:
             self.ViewReservation(bookingId, cnic, outCancel,
-                                 self.CancelTicketFrame, self.MessageFrameCancel)
-            #self.message.setText("Your Booking has been successfully cancelled! A refund of 50% has been transferred to your account.")
-            self.RemoveBooking(details)
+                                self.CancelTicketFrame, self.MessageFrameCancel)
+            popup_response = self.popups.cancel_popup(self)
+            if popup_response == "&Yes":
+                if self.RemoveBooking(details) != "The Booking has been cancelled":
+                    self.popups.error_popup("Booking cancellation failed!").success_popup(
+                    "Your Booking has been successfully cancelled! A refund of 50% has been transferred to your account.")
+            elif popup_response == "&No":
+                self.popups.error_popup("Booking cancellation failed!")
+        else:
+            self.popups.error_popup("Booking not Found!")
