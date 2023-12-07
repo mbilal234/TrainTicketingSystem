@@ -13,6 +13,7 @@ from db import DatabaseFunctions
 from utils import Popups
 from utils.InputFieldHelper import CorrectName, CorrectCNIC, CorrectBooking
 
+
 class MainWindow(QtWidgets.QMainWindow):
     """
     The MainWindow class represents the main window of the Train Reservation System application.
@@ -76,8 +77,8 @@ class MainWindow(QtWidgets.QMainWindow):
                  self.amount, self.discount, self.fare, self.bookingID]
 
         self.submitButton.clicked.connect(
-            lambda: self.BookTicket(boxes, details, frame, 0))
-        
+            lambda: self.BookTicket(boxes, details, frame))
+
         L = [self.FareFrame, self.BookingDetailsFrame1, self.AvailableCombo, self.NameInput, self.cnicInput, self.SuggestedTime, self.Above60Box, self.SeatsBox,
              self.Age2t18Box, self.BookDetails, self.dobInput, self.departureInput, self.destinationInput, self.DateInput, self.TypeInput, self.timeInput]
         self.cancelButton.clicked.connect(lambda: self.SetDefault(L))
@@ -99,29 +100,26 @@ class MainWindow(QtWidgets.QMainWindow):
             lambda: self.tabWidget.setCurrentIndex(0))
 
         self.ViewTicketFrame.hide()
-        self.MessageFrameView.hide()
         self.BookingInputBox.textChanged.connect(
             lambda: CorrectBooking(self.BookingInputBox, self.ViewSubmit))
         self.cnicInputBox.textChanged.connect(
             lambda: CorrectCNIC(self.cnicInputBox, self.ViewSubmit))
         self.ViewSubmit.clicked.connect(lambda: self.ViewReservation(self.BookingInputBox.text(
-        ), self.cnicInputBox.text(), out, self.ViewTicketFrame, self.MessageFrameView))
+        ), self.cnicInputBox.text(), out, self.ViewTicketFrame))
         self.MenuButtonViewTab.clicked.connect(lambda: self.ReturnToMenu(
-            [self.ViewTicketFrame, self.MessageFrameView], self.BookingInputBox, self.cnicInputBox))
+            self.ViewTicketFrame, self.BookingInputBox, self.cnicInputBox))
 
         self.CancelTicketFrame.hide()
-        self.MessageFrameCancel.hide()
         self.BookingInputCancel.textChanged.connect(
             lambda: CorrectBooking(self.BookingInputCancel, self.CancelSubmit))
         self.cnicInputCancel.textChanged.connect(
             lambda: CorrectCNIC(self.cnicInputCancel, self.CancelSubmit))
         self.CancelSubmit.clicked.connect(self.CancelBooking)
         self.MenuButtonCancelTab.clicked.connect(lambda: self.ReturnToMenu(
-            [self.CancelTicketFrame, self.MessageFrameCancel], self.BookingInputCancel, self.cnicInputCancel))
+            self.CancelTicketFrame, self.BookingInputCancel, self.cnicInputCancel))
 
     def ReturnToMenu(self, frames, name, cnic):
-        for frame in frames:
-            frame.hide()
+        frames.hide()
         name.setText("")
         cnic.setText("")
         name.setStyleSheet(
@@ -178,7 +176,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def fareCost(self, details):
         print(details)
         cost = self.db.get_fare(
-            details["Departure"], details["Destination"],details["Type"].lower())
+            details["Departure"], details["Destination"], details["Type"].lower())
 
         discount = int(
             (0.4*cost*int(details["Kids"])) + (0.2*cost*int(details["Elderly"])))
@@ -210,7 +208,8 @@ class MainWindow(QtWidgets.QMainWindow):
             if details["Time"] in i:
                 travelID = travelIDs['times'][i]
 
-        id = self.db.book_ticket(details["CNIC"], details["Name"], travelID, str(details["DOB"]), 0, details["Kids"], details["Elderly"], int(details["Seats"]),details['Type'].lower(), details["Berth"])
+        id = self.db.book_ticket(details["CNIC"], details["Name"], travelID, str(
+            details["DOB"]), 0, details["Kids"], details["Elderly"], int(details["Seats"]), details['Type'].lower(), details["Berth"])
 
         if type(id) is str:
             self.popups.error_popup(id)
@@ -218,7 +217,7 @@ class MainWindow(QtWidgets.QMainWindow):
         elif id == None:
             self.popups.error_popup("Booking Failed!")
             return None
-        
+
         rateframes[0].hide()
         rateframes[1].show()
         rateframes[2].setText("Rs. "+str(price[0]))
@@ -227,16 +226,16 @@ class MainWindow(QtWidgets.QMainWindow):
         rateframes[5].setText("Rs. "+str(price[3]))
         rateframes[6].setText(str(id))
 
-        self.popups.success_popup("Your booking has been successfully completed! Your booking ID is: " + str(id))
+        self.popups.success_popup(
+            "Your booking has been successfully completed! Your booking ID is: " + str(id))
 
         self.ViewReservationButton.clicked.connect(lambda: self.ViewReservation(
-            id, details["CNIC"], out, self.ViewTicketFrame, self.MessageFrameView))
+            id, details["CNIC"], out, self.ViewTicketFrame))
         return None
 
-    def BookTicket(self, inputbox, moredetails, frame, signal):
+    def BookTicket(self, inputbox, moredetails, frame):
         name = inputbox[0].text()
         cnic = inputbox[1].text()
-        print(name, cnic)
         tempdob = inputbox[2].date()
         dob = tempdob.toPyDate()
         dept = inputbox[3].currentText()
@@ -307,11 +306,13 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 i.setEnabled(True)
 
-    def ViewReservation(self, bookingId, cnic, outputs, frame, messageFrame):
+    def ViewReservation(self, bookingId, cnic, outputs, frame):
         details = self.db.view_booking(int(bookingId), cnic)
         print("The booking details are", details)
         if details == None:
-            messageFrame.show()
+            self.popups.error_popup("Booking not Found!")
+        elif type(details) is str:
+            self.popups.error_popup(details)
         else:
             frame.show()
             outputs[0].setText(cnic)
@@ -337,15 +338,17 @@ class MainWindow(QtWidgets.QMainWindow):
         outCancel = [self.cnicOutputCancel, self.NameOutputCancel, self.FromOutputCancel, self.ToOutputCancel,
                      self.DateOutputCancel, self.DayOutputCancel, self.TimeOutputCancel,
                      self.TypeOutputCancel, self.SeatsOutputCancel]
-        
+
         if details:
             self.ViewReservation(bookingId, cnic, outCancel,
-                                self.CancelTicketFrame, self.MessageFrameCancel)
+                                 self.CancelTicketFrame)
             popup_response = self.popups.cancel_popup(self)
             if popup_response == "&Yes":
-                if self.RemoveBooking(details) != "The Booking has been cancelled":
-                    self.popups.error_popup("Booking cancellation failed!").success_popup(
-                    "Your Booking has been successfully cancelled! A refund of 50% has been transferred to your account.")
+                if self.RemoveBooking(details) == "The Booking has been cancelled":
+                    self.popups.success_popup(
+                        "Your Booking has been successfully cancelled! A refund of 50% has been transferred to your account.")
+                else:
+                    self.popups.error_popup("Booking cancellation failed!")
             elif popup_response == "&No":
                 self.popups.error_popup("Booking cancellation failed!")
         else:

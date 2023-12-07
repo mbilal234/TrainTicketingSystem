@@ -41,4 +41,3 @@ class Popup(QtWidgets.QWidget):
 		msg.setStandardButtons(QMessageBox.Ok)
 		
 		msg.exec_()
-		
