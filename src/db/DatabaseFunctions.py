@@ -1,5 +1,5 @@
 from datetime import datetime
-import DatabaseConnection
+from db import DatabaseConnection
 
 # import DatabaseConnection
 class DatabaseFunction:
