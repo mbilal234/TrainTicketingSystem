@@ -4,13 +4,21 @@ from DatabaseFunctions import DatabaseFunction
 from datetime import datetime
 
 class TestView(unittest.TestCase):
-
+    """
+    Test cases for viewing bookings in the Train Reservation System.
+    """
     @classmethod
     def setUpClass(self):
+        """
+        Set up the necessary resources for testing the view booking functionalities.
+        """
         self.db = DatabaseFunction()
 
     @classmethod
     def tearDownClass(self):
+        """
+        Clean up resources after testing the view booking functionalities.
+        """
         self.db.bookings.delete_one({"bookingId": 3896})
         self.db.seats.update_many({"bookingId": 3896}, {"$set":{"bookingId": None}})
 
@@ -19,7 +27,9 @@ class TestView(unittest.TestCase):
 
 
     def test_view_booking_economy(self):
-
+        """
+        Test viewing details of an economy class booking.
+        """
         self.db.get_fare("Karachi", "Lahore", "economy")
         self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "economy", "", "2002-09-17", 3, 0, 0, 0)
 
@@ -51,6 +61,9 @@ class TestView(unittest.TestCase):
         self.assertEqual(doc, expected_doc)
 
     def test_view_booking_business(self):
+        """
+        Test viewing details of a business class booking.
+        """
         self.db.get_fare("Karachi", "Lahore", "business")
         self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "business", "A", "2002-09-17", 2, 0, 0, 0)
 
@@ -81,6 +94,9 @@ class TestView(unittest.TestCase):
         self.assertEqual(doc, expected_doc)
 
     def test_view_when_no_booking(self):
+        """
+        Test the case where no booking is found for viewing.
+        """
         doc = self.db.view_booking(4673, "1111111111111")
         expected = "No booking made with this Booking ID and CNIC."  
         self.assertEqual(doc, expected)
