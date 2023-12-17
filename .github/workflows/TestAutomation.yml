@@ -9,6 +9,9 @@ jobs:
     steps:
     - name : Checkout code
       uses : actions/checkout@v3
+
+    - name : Change Working Directory
+      run : cd src
       
     - name : Run tests 
-      run : python -m unittest discover -s src/db -p 'test_*.py'
+      run : python -m unittest discover -s db -p 'test_*.py'
