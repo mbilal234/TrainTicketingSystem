@@ -51,5 +51,28 @@ class TestCancel(unittest.TestCase):
         self.assertEqual(doc, expected)
 
 
+    def test_invalid_booking_id(self):
+        """
+        Test cancellation with an invalid booking ID.
+        """
+        doc = self.db.cancel_booking(9999, "1234567891011")
+        expected = "No booking found with this Booking ID and CNIC."
+        self.assertEqual(doc, expected)
+
+    def test_cancel_already_cancelled_booking(self):
+        """
+        Test cancellation of an already cancelled booking.
+        """
+        # Assume a booking is cancelled first
+        self.db.get_fare("Karachi", "Lahore", "economy")
+        self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "economy", "", "2002-09-17", 1, 0, 0, 0)
+        self.db.cancel_booking(3896, "1234567891011")
+
+        # Attempt to cancel the same booking again
+        doc = self.db.cancel_booking(3896, "1234567891011")
+        expected = "No booking found with this Booking ID and CNIC."
+        self.assertEqual(doc, expected)
+
+
 if __name__=="__main__":
     unittest.main()
