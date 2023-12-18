@@ -115,6 +115,41 @@ class TestBooking(unittest.TestCase):
         expected = 3896
         self.assertEqual(doc, expected)
 
+    def test_invalid_fare(self):
+        """
+        Test fare calculation for invalid routes or classes.
+        """
+        # Test for an invalid route
+        fare = self.db.get_fare("InvalidCity1", "InvalidCity2", "economy")
+        self.assertEqual(fare, "No Departure City Specified")
+
+        # Test for an invalid class
+        fare = self.db.get_fare("Karachi", "Lahore", "invalid_class")
+        self.assertEqual(fare, "No Class Type Specified")
+
+    def test_insufficient_seats(self):
+        """
+        Test booking when there are insufficient seats available.
+        """
+        # Assuming there are only 2 economy seats available for this test
+        self.db.get_fare("Karachi", "Lahore", "economy")
+
+        doc = self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "economy", "", "2002-09-17", 3, 0, 0, 0)
+        expected = "Not Enough Seats Available"
+        self.assertEqual(doc, expected)
+
+    def test_invalid_seats_and_time(self):
+        """
+        Test the retrieval of seats and departure times for invalid routes or classes.
+        """
+        # Test for an invalid departure city
+        seats_and_time = self.db.get_seats_and_time("InvalidCity", "Lahore", "2023-12-24", "08:00", "economy")
+        self.assertEqual(seats_and_time, "No Departure City Specified")
+
+        # Test for an invalid destination city
+        seats_and_time = self.db.get_seats_and_time("Karachi", "InvalidCity", "2023-12-24", "08:00", "economy")
+        self.assertEqual(seats_and_time, "No Destination City Specified")
+
 
 if __name__=="__main__":
     unittest.main()
