@@ -102,5 +102,30 @@ class TestView(unittest.TestCase):
         self.assertEqual(doc, expected)
 
 
+    def test_view_invalid_booking_id(self):
+        """
+        Test viewing details with an invalid booking ID.
+        """
+        doc = self.db.view_booking(9999, "1234567891011")
+        expected = "No booking made with this Booking ID and CNIC."
+        self.assertEqual(doc, expected)
+
+    def test_view_invalid_booking_id(self):
+        """
+        Test viewing details with an invalid booking ID.
+        """
+        doc = self.db.view_booking(9999, "1234567891011")
+        expected = "No booking made with this Booking ID and CNIC."
+        self.assertEqual(doc, expected)
+
+    def test_view_invalid_cnic(self):
+        """
+        Test viewing details with an invalid CNIC.
+        """
+        doc = self.db.view_booking(3896, "invalid_cnic")
+        expected = "No booking made with this Booking ID and CNIC."
+        self.assertEqual(doc, expected)
+
+
 if __name__=="__main__":
     unittest.main()
