@@ -19,7 +19,7 @@ class TestCancel(unittest.TestCase):
         Test the cancellation of an economy class booking.
         """
         self.db.get_fare("Karachi", "Lahore", "economy")
-        self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "economy", "", "2002-09-17", 3, 0, 0, 0)
+        self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "2002-09-17", 3, 0, 0, 0, "economy")
 
         doc = self.db.cancel_booking(3896, "1234567891011")
 
@@ -32,7 +32,7 @@ class TestCancel(unittest.TestCase):
         Test the cancellation of a business class booking.
         """
         self.db.get_fare("Karachi", "Lahore", "business")
-        self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "business", "A", "2002-09-17", 2, 0, 0, 0,)
+        self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "2002-09-17", 2, 0, 0, 0, "business", "A")
 
         doc = self.db.cancel_booking(3896, "1234567891011")
 

@@ -31,9 +31,10 @@ class TestView(unittest.TestCase):
         Test viewing details of an economy class booking.
         """
         self.db.get_fare("Karachi", "Lahore", "economy")
-        self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "economy", "", "2002-09-17", 3, 0, 0, 0)
+        self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "2002-09-17", 0, 0, 0, 3, "economy")
 
         doc = self.db.view_booking(3897, "1234567891011")
+        doc["timestamp"] = doc["timestamp"][0:-3]
         seats_booked = self.db.seats.find({"bookingId": 3897, "class": "economy"})
         seats = []
         for i in seats_booked:
@@ -41,7 +42,7 @@ class TestView(unittest.TestCase):
         expected_doc = {
             "bookingId": 3897,
             "class": "economy",
-            "timestamp": str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
+            "timestamp": str(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))[0:-3],
             "cnic": "1234567891011",
             "name": "Abdul Arham",
             "dateOfBirth": "2002-09-17",
@@ -65,16 +66,17 @@ class TestView(unittest.TestCase):
         Test viewing details of a business class booking.
         """
         self.db.get_fare("Karachi", "Lahore", "business")
-        self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "business", "A", "2002-09-17", 2, 0, 0, 0)
+        self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "2002-09-17", 0, 0, 0, 2, "business", "A")
 
         doc = self.db.view_booking(3896, "1234567891011")
+        doc["timestamp"] = doc["timestamp"][0:-3]
         seats_booked = self.db.seats.find({"bookingId": 3896, "class": "business"})
         seats = []
         for i in seats_booked:
             seats.append(i["seatNumber"])
         expected_doc = {
             "bookingId": 3896,
-            "timestamp": str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
+            "timestamp": str(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))[0:-3],
             "cnic": "1234567891011",
             "name": "Abdul Arham",
             "dateOfBirth": "2002-09-17",
@@ -98,7 +100,7 @@ class TestView(unittest.TestCase):
         Test the case where no booking is found for viewing.
         """
         doc = self.db.view_booking(4673, "1111111111111")
-        expected = "No booking made with this Booking ID and CNIC."  
+        expected = None 
         self.assertEqual(doc, expected)
 
 

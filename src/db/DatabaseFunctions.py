@@ -1,5 +1,5 @@
 from datetime import datetime
-from db import DatabaseConnection
+import DatabaseConnection
 
 # import DatabaseConnection
 class DatabaseFunction:
@@ -253,7 +253,6 @@ class DatabaseFunction:
             seats = list(self.seats.find({"class": travelling_class, "travelId": travelId, "bookingId": None, "seatNumber": { "$regex": pattern, "$options": "i"},}))
 
         n = len(seats)
-        print(n)
 
         if n < num_of_seats:
             return "Not Enough Seats Available"
@@ -299,7 +298,7 @@ class DatabaseFunction:
         booking = self.bookings.find_one({"bookingId": bookingId, "cnic": cnic})
         if booking == None:
             return None
-        print("The booking ID is", booking)
+        
         seats = []
         seat_type = ""
         if booking:
@@ -310,7 +309,6 @@ class DatabaseFunction:
                 seats.append(i["seatNumber"])  
 
         train_reserved = self.schedule.find_one({"travelId": booking["travelId"]})
-        print("The travel ID is", train_reserved)
 
         view_document = {
             "bookingId": bookingId, 

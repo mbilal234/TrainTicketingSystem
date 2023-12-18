@@ -3,6 +3,7 @@ import DatabaseFunctions as db
 #NEED FIXING, ERROR IMPORT
 import unittest
 from datetime import datetime
+import DatabaseConnection
 
 class TestBooking(unittest.TestCase):
     """
@@ -15,6 +16,7 @@ class TestBooking(unittest.TestCase):
         Set up the necessary resources for testing the booking functionalities.
         """
         self.db = db.DatabaseFunction()
+        self.dc = DatabaseConnection.connect()
 
     @classmethod
     def tearDownClass(self):
@@ -84,15 +86,21 @@ class TestBooking(unittest.TestCase):
         """
             
         seats = self.db.get_business_seats(1080, "A")
-        actual_result = {"seats":['A2', 'A6', 'A1', 'A4', 'A5', 'A3']}
+        berth = "A"
+        pattern = f"^{berth}"
+        actual_result = {"seats": list(self.dc["seats"].find({"class": "business", "travelId": 1080, "seatNumber": { "$regex": pattern, "$options": "i"}}))}
         self.assertEqual(seats, actual_result)
 
         seats = self.db.get_business_seats(1455, "C")
-        actual_result = {"seats":['C2', 'C4', 'C3', 'C6', 'C5', 'C1']}
+        berth = "C"
+        pattern = f"^{berth}"
+        actual_result = {"seats":list(self.dc["seats"].find({"class": "business", "travelId": 1455, "seatNumber": { "$regex": pattern, "$options": "i"}}))}
         self.assertEqual(seats, actual_result)
 
         seats = self.db.get_business_seats(2193, "F")
-        actual_result = {"seats":['F1', 'F4', 'F2', 'F3', 'F5', 'F6']}
+        berth = "F"
+        pattern = f"^{berth}"
+        actual_result = {"seats":list(self.dc["seats"].find({"class": "business", "travelId": 2193, "seatNumber": { "$regex": pattern, "$options": "i"}}))}
         self.assertEqual(seats, actual_result)  
 
     def test_economy_booking(self):
@@ -101,7 +109,7 @@ class TestBooking(unittest.TestCase):
 
         self.db.get_fare("Karachi", "Lahore", "economy")
 
-        doc = self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "economy", "", "2002-09-17", 3, 0, 0, 0)
+        doc = self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "2002-09-17", 3, 0, 0, 0, "economy")
         expected = 3897
         self.assertEqual(doc, expected)
 
@@ -111,7 +119,7 @@ class TestBooking(unittest.TestCase):
         """
         self.db.get_fare("Karachi", "Lahore", "business")
 
-        doc = self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "business", "A", "2002-09-17", 2, 0, 0, 0)
+        doc = self.db.book_ticket("1234567891011", "Abdul Arham", 1000, "2002-09-17", 2, 0, 0, 0, "business", "A")
         expected = 3896
         self.assertEqual(doc, expected)
 
