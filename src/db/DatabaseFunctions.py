@@ -1,5 +1,8 @@
 from datetime import datetime
-from db import DatabaseConnection
+try:
+    from db import DatabaseConnection
+except:
+    import DatabaseConnection
 
 # import DatabaseConnection
 class DatabaseFunction:
