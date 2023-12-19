@@ -241,7 +241,7 @@ class DatabaseFunction:
 
         other_seats = num_of_seats - numUnderTwo - numYoung - numAged
 
-        try: #cost function is not working properly!
+        try:
             cost = int(other_seats * self.fare + numUnderTwo * self.fare * 0.7 + numYoung * self.fare * 0.8 + numAged * self.fare * 0.75)
         except:
             cost = 3000
