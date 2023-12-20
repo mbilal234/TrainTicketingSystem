@@ -72,6 +72,7 @@
 <span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">db</span> <span class="kn">import</span> <span class="n">DatabaseConnection</span>
 
+<span class="c1"># import DatabaseConnection</span>
 <div class="viewcode-block" id="DatabaseFunction">
 <a class="viewcode-back" href="../../db.html#db.DatabaseFunctions.DatabaseFunction">[docs]</a>
 <span class="k">class</span> <span class="nc">DatabaseFunction</span><span class="p">:</span>
@@ -96,7 +97,8 @@
 
 <div class="viewcode-block" id="DatabaseFunction.get_fare">
 <a class="viewcode-back" href="../../db.html#db.DatabaseFunctions.DatabaseFunction.get_fare">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_fare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">departure</span><span class="p">,</span> <span class="n">destination</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_fare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">departure</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span><span class="n">class_type</span><span class="p">):</span>
+
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The function gets the fare from the database based on the departure and arrival cities selected</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -106,8 +108,11 @@
         
         <span class="k">if</span> <span class="ow">not</span> <span class="n">destination</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;No Destination City Specified&quot;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">class_type</span><span class="p">:</span>
+             <span class="k">return</span> <span class="s2">&quot;No Class Type Specified&quot;</span>
 
-        <span class="n">fare_query</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;$or&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;firstCity&quot;</span><span class="p">:</span> <span class="n">departure</span><span class="p">,</span> <span class="s2">&quot;secondCity&quot;</span><span class="p">:</span> <span class="n">destination</span> <span class="p">},</span> <span class="p">{</span><span class="s2">&quot;firstCity&quot;</span><span class="p">:</span> <span class="n">destination</span><span class="p">,</span> <span class="s2">&quot;secondCity&quot;</span><span class="p">:</span> <span class="n">departure</span><span class="p">}]}</span>
+        <span class="n">fare_query</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;$and&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;$or&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;firstCity&quot;</span><span class="p">:</span> <span class="n">departure</span><span class="p">,</span> <span class="s2">&quot;secondCity&quot;</span><span class="p">:</span> <span class="n">destination</span> <span class="p">},</span> <span class="p">{</span><span class="s2">&quot;firstCity&quot;</span><span class="p">:</span> <span class="n">destination</span><span class="p">,</span> <span class="s2">&quot;secondCity&quot;</span><span class="p">:</span> <span class="n">departure</span><span class="p">}]},</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="n">class_type</span><span class="p">}]}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fare</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fares</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">fare_query</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;price&quot;</span><span class="p">])</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fare</span></div>
 
@@ -143,7 +148,7 @@
         <span class="n">query</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;departure&quot;</span><span class="p">:</span> <span class="n">departure</span><span class="p">,</span> <span class="s2">&quot;destination&quot;</span><span class="p">:</span> <span class="n">destination</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;$regex&quot;</span><span class="p">:</span> <span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;$options&quot;</span><span class="p">:</span> <span class="s2">&quot;i&quot;</span><span class="p">}}</span>
         <span class="c1">#CURRENT ISSUE IS THAT DATE ON GUI IS UPTILL 2022, while in DATABASE IT IS AFTER 2023</span>
         <span class="n">documents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">query</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The documents are &quot;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">documents</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">documents</span><span class="p">))</span>
+        <span class="c1"># print(&quot;The documents are &quot;, type(documents), len(documents))</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No Trains Found&quot;</span><span class="p">)</span>
@@ -197,7 +202,7 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">seats</span><span class="p">:</span>
             <span class="n">all_seats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;seats&quot;</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;times&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">suggested_time</span><span class="p">):</span> <span class="n">travel_id_1</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">second_option_time</span><span class="p">):</span> <span class="n">travel_id_2</span><span class="p">},</span> <span class="s2">&quot;seats&quot;</span><span class="p">:</span> <span class="n">all_seats</span><span class="p">}</span></div>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;suggested&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">suggested_time</span><span class="p">),</span><span class="s2">&quot;times&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">suggested_time</span><span class="p">):</span> <span class="n">travel_id_1</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">second_option_time</span><span class="p">):</span> <span class="n">travel_id_2</span><span class="p">},</span> <span class="s2">&quot;seats&quot;</span><span class="p">:</span> <span class="n">all_seats</span><span class="p">}</span></div>
 
     
 
@@ -252,9 +257,56 @@
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;seats&quot;</span><span class="p">:</span> <span class="n">all_seats</span><span class="p">}</span></div>
 
     
+<div class="viewcode-block" id="DatabaseFunction.get_economy_seats">
+<a class="viewcode-back" href="../../db.html#db.DatabaseFunctions.DatabaseFunction.get_economy_seats">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_economy_seats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">travelId</span><span class="p">):</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The function aims to fetch business class seats</span>
+<span class="sd">        The seats from the berth given in argument is fetched</span>
+<span class="sd">        The function takes travelId and berth in arguments which are used in query</span>
+<span class="sd">        This function returns a list of seats to suggest the user</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">travelId</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No Travel ID Specified&quot;</span>
+
+        <span class="n">seats</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">aggregate</span><span class="p">([</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;$match&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;travelId&quot;</span><span class="p">:</span> <span class="n">travelId</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;$lookup&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="s2">&quot;seats&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;localField&quot;</span><span class="p">:</span> <span class="s2">&quot;travelId&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;foreignField&quot;</span><span class="p">:</span> <span class="s2">&quot;travelId&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;as&quot;</span><span class="p">:</span> <span class="s2">&quot;seats&quot;</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;$unwind&quot;</span><span class="p">:</span> <span class="s2">&quot;$seats&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;$match&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;seats.class&quot;</span><span class="p">:</span> <span class="s2">&quot;economy&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;seats.bookingId&quot;</span><span class="p">:</span> <span class="kc">None</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">]))</span>
+
+        <span class="n">all_seats</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">seats</span><span class="p">:</span>
+            <span class="n">all_seats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;seats&quot;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;seats&quot;</span><span class="p">:</span> <span class="n">all_seats</span><span class="p">}</span></div>
+
+    
 <div class="viewcode-block" id="DatabaseFunction.book_ticket">
 <a class="viewcode-back" href="../../db.html#db.DatabaseFunctions.DatabaseFunction.book_ticket">[docs]</a>
-    <span class="k">def</span> <span class="nf">book_ticket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cnic</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">travelId</span><span class="p">,</span> <span class="n">dateOfBirth</span><span class="p">,</span> <span class="n">numUnderTwo</span><span class="p">,</span> <span class="n">numYoung</span><span class="p">,</span> <span class="n">numAged</span><span class="p">,</span> <span class="n">seats</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">book_ticket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cnic</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">travelId</span><span class="p">,</span> <span class="n">dateOfBirth</span><span class="p">,</span> <span class="n">numUnderTwo</span><span class="p">,</span> <span class="n">numYoung</span><span class="p">,</span> <span class="n">numAged</span><span class="p">,</span> <span class="n">num_of_seats</span><span class="p">,</span> <span class="n">travelling_class</span><span class="p">,</span> <span class="n">berth</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function completes the booking procedure</span>
 <span class="sd">        The function takes some arguments and store them in database</span>
@@ -273,8 +325,6 @@
         
         <span class="k">if</span> <span class="ow">not</span> <span class="n">dateOfBirth</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;No Date Of Birth Specified&quot;</span>
-        
-        <span class="n">num_of_seats</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seats</span><span class="p">)</span>
 
         <span class="n">other_seats</span> <span class="o">=</span> <span class="n">num_of_seats</span> <span class="o">-</span> <span class="n">numUnderTwo</span> <span class="o">-</span> <span class="n">numYoung</span> <span class="o">-</span> <span class="n">numAged</span>
 
@@ -282,6 +332,18 @@
             <span class="n">cost</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">other_seats</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fare</span> <span class="o">+</span> <span class="n">numUnderTwo</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fare</span> <span class="o">*</span> <span class="mf">0.7</span> <span class="o">+</span> <span class="n">numYoung</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fare</span> <span class="o">*</span> <span class="mf">0.8</span> <span class="o">+</span> <span class="n">numAged</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fare</span> <span class="o">*</span> <span class="mf">0.75</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">cost</span> <span class="o">=</span> <span class="mi">3000</span>
+
+        <span class="k">if</span> <span class="n">travelling_class</span><span class="o">==</span><span class="s2">&quot;economy&quot;</span><span class="p">:</span>
+            <span class="n">seats</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seats</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="n">travelling_class</span><span class="p">,</span> <span class="s2">&quot;travelId&quot;</span><span class="p">:</span> <span class="n">travelId</span><span class="p">,</span> <span class="s2">&quot;bookingId&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;^</span><span class="si">{</span><span class="n">berth</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">seats</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seats</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="n">travelling_class</span><span class="p">,</span> <span class="s2">&quot;travelId&quot;</span><span class="p">:</span> <span class="n">travelId</span><span class="p">,</span> <span class="s2">&quot;bookingId&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;seatNumber&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;$regex&quot;</span><span class="p">:</span> <span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;$options&quot;</span><span class="p">:</span> <span class="s2">&quot;i&quot;</span><span class="p">},}))</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seats</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="n">num_of_seats</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Not Enough Seats Available&quot;</span>
 
         <span class="n">bookings_pointer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bookings</span><span class="o">.</span><span class="n">count_documents</span><span class="p">({})</span>
 
@@ -301,18 +363,12 @@
             <span class="s2">&quot;cost&quot;</span><span class="p">:</span> <span class="n">cost</span>
             <span class="p">}</span>
         
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">seats</span><span class="p">:</span>
-            <span class="n">seat_document</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seats</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s2">&quot;seatNumber&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">})</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">seat_document</span><span class="p">[</span><span class="s2">&quot;bookingId&quot;</span><span class="p">]:</span>
-                    <span class="k">return</span> <span class="s2">&quot;The Seat &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; is already booked.&quot;</span>
-            <span class="k">except</span><span class="p">:</span>
-                <span class="k">pass</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">bookings</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span><span class="n">booking_document</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_of_seats</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">seats</span><span class="o">.</span><span class="n">update_one</span><span class="p">({</span><span class="s2">&quot;seatNumber&quot;</span><span class="p">:</span><span class="n">seats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;seatNumber&quot;</span><span class="p">]},</span> <span class="p">{</span><span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;bookingId&quot;</span><span class="p">:</span> <span class="n">bookingId</span><span class="p">}})</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">seats</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">seats</span><span class="o">.</span><span class="n">update_one</span><span class="p">({</span><span class="s2">&quot;seatNumber&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;$set&quot;</span><span class="p">:{</span><span class="s2">&quot;bookingId&quot;</span><span class="p">:</span> <span class="n">bookingId</span><span class="p">}})</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bookings</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span><span class="n">booking_document</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">bookingId</span></div>
 
 
 
@@ -331,11 +387,16 @@
             <span class="k">return</span> <span class="s2">&quot;No CNIC Number Specified&quot;</span>
 
         <span class="n">booking</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bookings</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s2">&quot;bookingId&quot;</span><span class="p">:</span> <span class="n">bookingId</span><span class="p">,</span> <span class="s2">&quot;cnic&quot;</span><span class="p">:</span> <span class="n">cnic</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">booking</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The booking ID is&quot;</span><span class="p">,</span> <span class="n">booking</span><span class="p">)</span>
         <span class="n">seats</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">seat_type</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">if</span> <span class="n">booking</span><span class="p">:</span>
             <span class="n">all_seats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seats</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s2">&quot;bookingId&quot;</span><span class="p">:</span> <span class="n">bookingId</span><span class="p">})</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">all_seats</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">seat_type</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                    <span class="n">seat_type</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span>
                 <span class="n">seats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;seatNumber&quot;</span><span class="p">])</span>  
 
         <span class="n">train_reserved</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s2">&quot;travelId&quot;</span><span class="p">:</span> <span class="n">booking</span><span class="p">[</span><span class="s2">&quot;travelId&quot;</span><span class="p">]})</span>
@@ -350,11 +411,14 @@
             <span class="s2">&quot;travelId&quot;</span><span class="p">:</span> <span class="n">booking</span><span class="p">[</span><span class="s2">&quot;travelId&quot;</span><span class="p">],</span>
             <span class="s2">&quot;departure&quot;</span><span class="p">:</span> <span class="n">train_reserved</span><span class="p">[</span><span class="s2">&quot;departure&quot;</span><span class="p">],</span>
             <span class="s2">&quot;destination&quot;</span><span class="p">:</span> <span class="n">train_reserved</span><span class="p">[</span><span class="s2">&quot;destination&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">train_reserved</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="n">train_reserved</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span>
             <span class="s2">&quot;numberOfSeats&quot;</span> <span class="p">:</span> <span class="n">booking</span><span class="p">[</span><span class="s2">&quot;numberOfSeats&quot;</span><span class="p">],</span>
             <span class="s2">&quot;numUnderTwo&quot;</span><span class="p">:</span> <span class="n">booking</span><span class="p">[</span><span class="s2">&quot;numUnderTwo&quot;</span><span class="p">],</span>
             <span class="s2">&quot;numYoung&quot;</span><span class="p">:</span> <span class="n">booking</span><span class="p">[</span><span class="s2">&quot;numYoung&quot;</span><span class="p">],</span>
             <span class="s2">&quot;numAged&quot;</span><span class="p">:</span> <span class="n">booking</span><span class="p">[</span><span class="s2">&quot;numAged&quot;</span><span class="p">],</span>
             <span class="s2">&quot;cost&quot;</span><span class="p">:</span> <span class="n">booking</span><span class="p">[</span><span class="s2">&quot;cost&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="n">seat_type</span><span class="p">,</span>
             <span class="s2">&quot;seats&quot;</span><span class="p">:</span> <span class="n">seats</span><span class="p">,</span>
         <span class="p">}</span>
 
@@ -389,9 +453,10 @@
 
 <span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">DatabaseFunction</span><span class="p">()</span>
-    <span class="n">df</span><span class="o">.</span><span class="n">get_fare</span><span class="p">(</span><span class="s2">&quot;Karachi&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">info</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">get_seats_and_time</span><span class="p">(</span><span class="s2">&quot;Karachi&quot;</span><span class="p">,</span> <span class="s2">&quot;Lahore&quot;</span><span class="p">,</span> <span class="s2">&quot;2023-10-23&quot;</span><span class="p">,</span> <span class="s2">&quot;08:30:00&quot;</span><span class="p">,</span> <span class="s2">&quot;economy&quot;</span><span class="p">)</span>
-
+    <span class="n">info</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">get_fare</span><span class="p">(</span><span class="s2">&quot;Karachi&quot;</span><span class="p">,</span> <span class="s2">&quot;Lahore&quot;</span><span class="p">,</span> <span class="s2">&quot;economy&quot;</span><span class="p">)</span>
+    <span class="c1"># info = df.get_seats_and_time(&quot;Karachi&quot;, &quot;Lahore&quot;, &quot;2023-10-23&quot;, &quot;08:30:00&quot;, &quot;economy&quot;)</span>
+    <span class="c1"># print(&quot;Final info is:\n&quot;)</span>
+    <span class="c1"># print(info)</span>
 
     <span class="c1"># To make sure that you have got the correct suggested times, run this code</span>
     <span class="c1"># print(info[&quot;times&quot;]) # The times suggested, the keys show the time while the values are the travelIds</span>
@@ -400,12 +465,12 @@
     <span class="c1">#     print(i)</span>
 
     <span class="c1"># Code for Booking</span>
-    <span class="c1"># doc = df.book_ticket(&quot;/////////&quot;, &quot;///////////&quot;, 1000, &quot;2002-09-17&quot;, 0, 0, 0, [1])</span>
-    <span class="c1"># print(doc)</span>
+    <span class="n">doc</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">book_ticket</span><span class="p">(</span><span class="s2">&quot;////////////////&quot;</span><span class="p">,</span> <span class="s2">&quot;Abdul Arham&quot;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span>  <span class="s2">&quot;business&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;2002-09-17&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
 
     <span class="c1"># Code for viewing</span>
-    <span class="n">booking</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">view_booking</span><span class="p">(</span><span class="mi">3897</span><span class="p">,</span> <span class="s2">&quot;1111111111112&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">booking</span><span class="p">)</span>
+    <span class="c1"># booking = df.view_booking(3897, &quot;1111111111112&quot;)</span>
+    <span class="c1"># print(booking)</span>
 
     <span class="c1"># Code for cancelling</span>
     <span class="c1"># result = df.cancel_booking(3896, &quot;//////////&quot;)</span>

@@ -4052,54 +4052,6 @@ border-radius: 20px;</string>
        <string>Main Menu</string>
       </property>
      </widget>
-     <widget class="QFrame" name="MessageFrameView">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>230</y>
-        <width>781</width>
-        <height>361</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(14, 127, 108);
-color: rgb(232, 246, 239);
-border-radius: 40px;</string>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <widget class="QLabel" name="NotFoundMessage">
-       <property name="geometry">
-        <rect>
-         <x>170</x>
-         <y>100</y>
-         <width>431</width>
-         <height>141</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>14</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Booking Not Found!!!</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="wordWrap">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </widget>
-     <zorder>MessageFrameView</zorder>
      <zorder>ViewTicketFrame</zorder>
      <zorder>WindowTitle_2</zorder>
      <zorder>BookingInputLabel</zorder>
@@ -5356,62 +5308,6 @@ border-radius: 20px;</string>
        <string>Main Menu</string>
       </property>
      </widget>
-     <widget class="QFrame" name="MessageFrameCancel">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>230</y>
-        <width>781</width>
-        <height>361</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(14, 127, 108);
-color: rgb(232, 246, 239);
-border-radius: 40px;</string>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <widget class="QLabel" name="MessageNotFoundCancel">
-       <property name="geometry">
-        <rect>
-         <x>170</x>
-         <y>100</y>
-         <width>431</width>
-         <height>141</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>14</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Booking Not Found!!!</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="wordWrap">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </widget>
-     <zorder>MessageFrameCancel</zorder>
-     <zorder>cnicLabel_4</zorder>
-     <zorder>cnicInputCancel</zorder>
-     <zorder>BookingInputCancel</zorder>
-     <zorder>BookingLabelCancel</zorder>
-     <zorder>WindowTitle_5</zorder>
-     <zorder>CancelSubmit</zorder>
-     <zorder>CancelTicketFrame</zorder>
-     <zorder>MenuButtonCancelTab</zorder>
     </widget>
    </widget>
   </widget>

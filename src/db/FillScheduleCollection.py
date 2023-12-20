@@ -1,4 +1,4 @@
-# from DatabaseConnection import db
+from DatabaseConnection import db
 #ERRORED IMPORT, NEED FIXING
 
 from datetime import datetime, timedelta
@@ -37,7 +37,7 @@ class FillScheduleCollection:
             "13:30:00", "21:30:00", "14:30:00", "22:30:00", "15:30:00", "23:30:00"
         ] * 100
         self.dates = []
-        self.start_date = datetime.date(datetime.strptime("2023-10-14", "%Y-%m-%d"))
+        self.start_date = datetime.date(datetime.strptime("2023-12-14", "%Y-%m-%d"))
         for i in range(30):
             self.dates.append(self.start_date + timedelta(days=i))
         self.t_num = 0

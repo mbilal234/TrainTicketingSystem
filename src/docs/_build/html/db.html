@@ -50,8 +50,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-db.DatabaseConnection">db.DatabaseConnection module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-db.DatabaseFunctions">db.DatabaseFunctions module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-db.FillFaresCollection">db.FillFaresCollection module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-db.FillSeatsCollection">db.FillSeatsCollection module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#db-fillfarescollection-module">db.FillFaresCollection module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#db-fillseatscollection-module">db.FillSeatsCollection module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-db.FillScheduleCollection">db.FillScheduleCollection module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-db.test_booking">db.test_booking module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-db.test_cancel">db.test_cancel module</a></li>
@@ -129,7 +129,7 @@ The get_business_seats() fetches the seats from database based on the selected b
 The book_ticket() function completes the booking process</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="db.DatabaseFunctions.DatabaseFunction.book_ticket">
-<span class="sig-name descname"><span class="pre">book_ticket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cnic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">travelId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dateOfBirth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numUnderTwo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numYoung</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numAged</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seats</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/DatabaseFunctions.html#DatabaseFunction.book_ticket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.DatabaseFunctions.DatabaseFunction.book_ticket" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">book_ticket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cnic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">travelId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dateOfBirth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numUnderTwo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numYoung</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numAged</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_of_seats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">travelling_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">berth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/DatabaseFunctions.html#DatabaseFunction.book_ticket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.DatabaseFunctions.DatabaseFunction.book_ticket" title="Link to this definition"></a></dt>
 <dd><p>This function completes the booking procedure
 The function takes some arguments and store them in database
 The function also updates the status of the seats booked by the user
@@ -153,8 +153,17 @@ This function returns a list of seats to suggest the user</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="db.DatabaseFunctions.DatabaseFunction.get_economy_seats">
+<span class="sig-name descname"><span class="pre">get_economy_seats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">travelId</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/DatabaseFunctions.html#DatabaseFunction.get_economy_seats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.DatabaseFunctions.DatabaseFunction.get_economy_seats" title="Link to this definition"></a></dt>
+<dd><p>The function aims to fetch business class seats
+The seats from the berth given in argument is fetched
+The function takes travelId and berth in arguments which are used in query
+This function returns a list of seats to suggest the user</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="db.DatabaseFunctions.DatabaseFunction.get_fare">
-<span class="sig-name descname"><span class="pre">get_fare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">departure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/DatabaseFunctions.html#DatabaseFunction.get_fare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.DatabaseFunctions.DatabaseFunction.get_fare" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_fare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">departure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/DatabaseFunctions.html#DatabaseFunction.get_fare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.DatabaseFunctions.DatabaseFunction.get_fare" title="Link to this definition"></a></dt>
 <dd><p>The function gets the fare from the database based on the departure and arrival cities selected</p>
 </dd></dl>
 
@@ -180,62 +189,11 @@ The function takes the bookingId and cnic and matches the documents in the datab
 </dd></dl>
 
 </section>
-<section id="module-db.FillFaresCollection">
-<span id="db-fillfarescollection-module"></span><h2>db.FillFaresCollection module<a class="headerlink" href="#module-db.FillFaresCollection" title="Link to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="db.FillFaresCollection.FillFaresCollection">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">db.FillFaresCollection.</span></span><span class="sig-name descname"><span class="pre">FillFaresCollection</span></span><a class="reference internal" href="_modules/db/FillFaresCollection.html#FillFaresCollection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.FillFaresCollection.FillFaresCollection" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This class is built with the purpose of filling the fares collection in the database
-Fares are based on the cities between which the train is travelling.
-The class has two methods
-A generate_documents() method that will generate the fares
-And a save_documents() mathos that saves all the fares in the database</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="db.FillFaresCollection.FillFaresCollection.generate_documents">
-<span class="sig-name descname"><span class="pre">generate_documents</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/FillFaresCollection.html#FillFaresCollection.generate_documents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.FillFaresCollection.FillFaresCollection.generate_documents" title="Link to this definition"></a></dt>
-<dd><p>This function will generate all the fares
-The function does not take any arguments and returns None
-The function generates objects that contain all the fares information
-The objects are then saved in self.fares list</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="db.FillFaresCollection.FillFaresCollection.save_documents">
-<span class="sig-name descname"><span class="pre">save_documents</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/FillFaresCollection.html#FillFaresCollection.save_documents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.FillFaresCollection.FillFaresCollection.save_documents" title="Link to this definition"></a></dt>
-<dd><p>After the fare prices have been stored in a list by the generate_fares() function
-This function is called to save all objects in the array to our database</p>
-</dd></dl>
-
-</dd></dl>
-
+<section id="db-fillfarescollection-module">
+<h2>db.FillFaresCollection module<a class="headerlink" href="#db-fillfarescollection-module" title="Link to this heading"></a></h2>
 </section>
-<section id="module-db.FillSeatsCollection">
-<span id="db-fillseatscollection-module"></span><h2>db.FillSeatsCollection module<a class="headerlink" href="#module-db.FillSeatsCollection" title="Link to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="db.FillSeatsCollection.FillSeatsCollection">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">db.FillSeatsCollection.</span></span><span class="sig-name descname"><span class="pre">FillSeatsCollection</span></span><a class="reference internal" href="_modules/db/FillSeatsCollection.html#FillSeatsCollection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.FillSeatsCollection.FillSeatsCollection" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>The FillSeatsCollection class will add documents to the seat collection in database
-The class has two functions
-- One is the generate documents function that will generate all the documents
-- The second function is the save_documents() function that will save the documents in database</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="db.FillSeatsCollection.FillSeatsCollection.generate_documents">
-<span class="sig-name descname"><span class="pre">generate_documents</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/FillSeatsCollection.html#FillSeatsCollection.generate_documents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.FillSeatsCollection.FillSeatsCollection.generate_documents" title="Link to this definition"></a></dt>
-<dd><p>This function will generate all documents
-The document will have information about the seat number, class and the travelId</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="db.FillSeatsCollection.FillSeatsCollection.save_documents">
-<span class="sig-name descname"><span class="pre">save_documents</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/db/FillSeatsCollection.html#FillSeatsCollection.save_documents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#db.FillSeatsCollection.FillSeatsCollection.save_documents" title="Link to this definition"></a></dt>
-<dd><p>After the generation of all the seats documents
-This function saves the documents in the database</p>
-</dd></dl>
-
-</dd></dl>
-
+<section id="db-fillseatscollection-module">
+<h2>db.FillSeatsCollection module<a class="headerlink" href="#db-fillseatscollection-module" title="Link to this heading"></a></h2>
 </section>
 <section id="module-db.FillScheduleCollection">
 <span id="db-fillschedulecollection-module"></span><h2>db.FillScheduleCollection module<a class="headerlink" href="#module-db.FillScheduleCollection" title="Link to this heading"></a></h2>

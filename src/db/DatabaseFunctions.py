@@ -1,5 +1,8 @@
 from datetime import datetime
-from db import DatabaseConnection
+try:
+    from db import DatabaseConnection
+except:
+    import DatabaseConnection
 
 # import DatabaseConnection
 class DatabaseFunction:
@@ -22,7 +25,7 @@ class DatabaseFunction:
         self.seats = db["seats"]
         self.fare = None
 
-    def get_fare(self, departure, destination):
+    def get_fare(self, departure, destination,class_type):
 
         """
         The function gets the fare from the database based on the departure and arrival cities selected
@@ -35,7 +38,7 @@ class DatabaseFunction:
             return "No Destination City Specified"
         
         if not class_type:
-            return "No Class Type Specified"
+             return "No Class Type Specified"
 
         fare_query = {"$and": [{"$or": [{"firstCity": departure, "secondCity": destination }, {"firstCity": destination, "secondCity": departure}]}, {"class": class_type}]}
         self.fare = int(self.fares.find(fare_query)[0]["price"])
@@ -175,7 +178,50 @@ class DatabaseFunction:
 
         return {"seats": all_seats}
     
-    def book_ticket(self, cnic, name, travelId, dateOfBirth, numUnderTwo, numYoung, numAged, seats):
+    def get_economy_seats(self, travelId):
+
+        """
+        The function aims to fetch business class seats
+        The seats from the berth given in argument is fetched
+        The function takes travelId and berth in arguments which are used in query
+        This function returns a list of seats to suggest the user
+        """
+
+        if not travelId:
+            return "No Travel ID Specified"
+
+        seats = list(self.schedule.aggregate([
+            {
+                "$match": {
+                    "travelId": travelId
+                }
+            },
+            {
+                "$lookup": {
+                    "from": "seats",
+                    "localField": "travelId",
+                    "foreignField": "travelId",
+                    "as": "seats"
+                }
+            },
+            {
+                "$unwind": "$seats"
+            },
+            {
+                "$match": {
+                    "seats.class": "economy",
+                    "seats.bookingId": None
+                }
+            }
+        ]))
+
+        all_seats = []
+        for i in seats:
+            all_seats.append(i["seats"])
+
+        return {"seats": all_seats}
+    
+    def book_ticket(self, cnic, name, travelId, dateOfBirth, numUnderTwo, numYoung, numAged, num_of_seats, travelling_class, berth=None):
 
         """
         This function completes the booking procedure
@@ -198,7 +244,7 @@ class DatabaseFunction:
 
         other_seats = num_of_seats - numUnderTwo - numYoung - numAged
 
-        try: #cost function is not working properly!
+        try:
             cost = int(other_seats * self.fare + numUnderTwo * self.fare * 0.7 + numYoung * self.fare * 0.8 + numAged * self.fare * 0.75)
         except:
             cost = 3000
@@ -254,6 +300,8 @@ class DatabaseFunction:
             return "No CNIC Number Specified"
 
         booking = self.bookings.find_one({"bookingId": bookingId, "cnic": cnic})
+        if booking == None:
+            return None
         print("The booking ID is", booking)
         seats = []
         seat_type = ""
