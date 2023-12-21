@@ -78,6 +78,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.submitButton.clicked.connect(
             lambda: self.BookTicket(boxes, details, frame))
+        
+        # self.submitButton.clicked.connect(
+        #     lambda: self.hello_world())
 
         L = [self.FareFrame, self.BookingDetailsFrame1, self.AvailableCombo, self.NameInput, self.cnicInput, self.SuggestedTime, self.Above60Box, self.SeatsBox,
              self.Age2t18Box, self.BookDetails, self.dobInput, self.departureInput, self.destinationInput, self.DateInput, self.TypeInput, self.timeInput]
@@ -185,6 +188,7 @@ class MainWindow(QtWidgets.QMainWindow):
         return cost, orig_cost, discount, fare_cost
 
     def FinalSelection(self, details, box, rateframes):
+        print("The World is ours.")
         details["Time"] = box[0].currentText()
         if details["Type"] == "Business":
             details["Berth"] = box[-1].currentText()
@@ -233,9 +237,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ViewReservationButton.clicked.connect(lambda: self.ViewReservation(
             id, details["CNIC"], out, self.ViewTicketFrame))
+        
         return None
 
     def BookTicket(self, inputbox, moredetails, frame):
+        print("The Grand Finale")
         name = inputbox[0].text()
         cnic = inputbox[1].text()
         tempdob = inputbox[2].date()
@@ -286,9 +292,16 @@ class MainWindow(QtWidgets.QMainWindow):
 
         reservation = {"CNIC": cnic, "Name": name, "DOB": dob, "Departure": dept, "Destination": dest, "Date": date, "Day": day,
                        "Time": '', "Type": t_type, "Seats": 0, "Berth": 0, "FareCost": 0, "Elderly": 0, "Kids": 0}
-
+        
+        try:
+            moredetails[-2].clicked.disconnect()
+        except:
+            pass
         moredetails[-2].clicked.connect(
             lambda: self.FinalSelection(reservation, moredetails, frame))
+
+
+        # moredetails[-2].clicked.connect(lambda: self.hello_world())
 
     def SetDefault(self, L):
         L[0].hide()
