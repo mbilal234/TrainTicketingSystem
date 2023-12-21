@@ -208,9 +208,11 @@ class MainWindow(QtWidgets.QMainWindow):
             if details["Time"] in i:
                 travelID = travelIDs['times'][i]
 
+        print("zalzalaaaaaaaaaaaaaa")
+        print(travelID)
         id = self.db.book_ticket(details["CNIC"], details["Name"], travelID, str(
             details["DOB"]), 0, details["Kids"], details["Elderly"], int(details["Seats"]), details['Type'].lower(), details["Berth"])
-
+        print(id)
         if type(id) is str:
             self.popups.error_popup(id)
             return None

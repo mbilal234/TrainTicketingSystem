@@ -16,7 +16,7 @@ def connect():
     
     load_dotenv()
     my_client = pymongo.MongoClient(os.getenv("MONGO_URI"))
-    db = my_client["test_trs"]
+    db = my_client["train_reservation_system"]
 
     return db
 
