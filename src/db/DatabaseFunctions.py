@@ -257,8 +257,6 @@ class DatabaseFunction:
             seats = list(self.seats.find({"class": travelling_class, "travelId": travelId, "bookingId": None, "seatNumber": { "$regex": pattern, "$options": "i"},}))
 
         n = len(seats)
-        print("dbjknfjvkjfnkuscJK,rnoinuihfifiuwfeaoivbjneilhvbjk")
-        print(n)
 
         if n < num_of_seats:
             return "Not Enough Seats Available"
