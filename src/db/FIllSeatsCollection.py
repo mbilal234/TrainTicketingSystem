@@ -1,4 +1,4 @@
-# from DatabaseConnection import db
+import DatabaseConnection
 #ERRORED IMPORT NEED FIXING
 
 class FillSeatsCollection:
@@ -11,7 +11,8 @@ class FillSeatsCollection:
     """
 
     def __init__(self):
-        collection = db["schedule"]
+        self.db = DatabaseConnection.connect()
+        collection = self.db["schedule"]
         self.complete_schedule = collection.find()
         self.seats = []
         
@@ -34,7 +35,7 @@ class FillSeatsCollection:
         After the generation of all the seats documents
         This function saves the documents in the database
         """
-        collection = db["seats"]
+        collection = self.db["seats"]
         collection.insert_many(self.seats)
         print("Documents Inserted into Database") 
 

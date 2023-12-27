@@ -1,8 +1,9 @@
 from datetime import datetime
 try:
-    from db import DatabaseConnection
-except:
     import DatabaseConnection
+except:
+    from db import DatabaseConnection
+
 
 # import DatabaseConnection
 class DatabaseFunction:
@@ -256,6 +257,7 @@ class DatabaseFunction:
             seats = list(self.seats.find({"class": travelling_class, "travelId": travelId, "bookingId": None, "seatNumber": { "$regex": pattern, "$options": "i"},}))
 
         n = len(seats)
+        print("dbjknfjvkjfnkuscJK,rnoinuihfifiuwfeaoivbjneilhvbjk")
         print(n)
 
         if n < num_of_seats:
@@ -264,6 +266,7 @@ class DatabaseFunction:
         bookings_pointer = self.bookings.count_documents({})
 
         bookingId = 3896 + bookings_pointer
+
 
         booking_document = {
             "bookingId": bookingId, 
@@ -280,10 +283,10 @@ class DatabaseFunction:
             }
         
         for i in range(num_of_seats):
-            self.seats.update_one({"seatNumber":seats[i]["seatNumber"]}, {"$set": {"bookingId": bookingId}})
+            self.seats.update_one({"seatNumber":seats[i]["seatNumber"], "travelId": travelId}, {"$set": {"bookingId": bookingId}})
 
         self.bookings.insert_one(booking_document)
-        
+
         return bookingId
 
 
@@ -302,7 +305,7 @@ class DatabaseFunction:
         booking = self.bookings.find_one({"bookingId": bookingId, "cnic": cnic})
         if booking == None:
             return None
-        print("The booking ID is", booking)
+        
         seats = []
         seat_type = ""
         if booking:
@@ -313,7 +316,6 @@ class DatabaseFunction:
                 seats.append(i["seatNumber"])  
 
         train_reserved = self.schedule.find_one({"travelId": booking["travelId"]})
-        print("The travel ID is", train_reserved)
 
         view_document = {
             "bookingId": bookingId, 
@@ -360,8 +362,8 @@ class DatabaseFunction:
         
 
 if __name__=="__main__":
-    df = DatabaseFunction()
-    info = df.get_fare("Karachi", "Lahore", "economy")
+    # df = DatabaseFunction()
+    # info = df.get_fare("Karachi", "Lahore", "economy")
     # info = df.get_seats_and_time("Karachi", "Lahore", "2023-10-23", "08:30:00", "economy")
     # print("Final info is:\n")
     # print(info)
@@ -373,8 +375,8 @@ if __name__=="__main__":
     #     print(i)
 
     # Code for Booking
-    doc = df.book_ticket("////////////////", "Abdul Arham", 1000,  "business", "A", "2002-09-17", 0, 0, 0, 1)
-    print(doc)
+    # doc = df.book_ticket("////////////////", "Abdul Arham", 1000,  "business", "A", "2002-09-17", 0, 0, 0, 1)
+    # print(doc)
 
     # Code for viewing
     # booking = df.view_booking(3897, "1111111111112")
@@ -383,5 +385,17 @@ if __name__=="__main__":
     # Code for cancelling
     # result = df.cancel_booking(3896, "//////////")
     # print(result)
+
+    df = DatabaseFunction()
+
+    doc = df.book_ticket("3830342091289", "Abdul Arham", 1254, "2002-09-17", 0, 0, 0, 2, "economy")
+    print(doc)
+
+    db = DatabaseConnection.connect()
+    seats_collection = db["seats"]
+    seats = list(seats_collection.find({"class": "economy", "travelId": 1000, "bookingId": None}))
+    for i in seats:
+        if i["bookingId"] is not None:
+            print("Hello World")
 
 
